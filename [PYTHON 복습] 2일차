@@ -1,0 +1,639 @@
+2일차
+
+king =[['주몽','유리왕','대무신왕'],['태종무열왕','경덕왕'],['온조왕','개로왕']]
+
+[문제11] 1번 인덱스에 '원성왕' 추가하세요.
+king[1].append('원성왕')
+king[1]
+
+[문제12] 2번 인덱스에 '무왕' 추가하세요.
+king[2].append('무왕')
+king[2]
+
+[문제13] 0번 인덱스에 '대무신왕' 추가하세요.
+king[0].append('대무신왕')
+king[0]
+
+[문제14] 0번 인덱스에 '미천왕','미천왕','광개토대왕' 한꺼번에 추가하세요.
+b='미천왕','미천왕','광개토대왕'
+king[0].extend(b)
+king
+
+king[0].extend(['미천왕','미천왕','광개토대왕'])
+king[0]
+
+[문제15] '미천왕' 갯수를 세어주세요.
+king.count('미천왕') # 중첩 인덱스이기 때문에 안나옴 
+
+king[0].count('미천왕')
+king[1].count('미천왕')
+king[2].count('미천왕')
+
+[문제16] 0번 인덱스만 오름차순 정렬해주세요.
+sorted(king[0])
+king[0].sort()
+king[0]
+
+[문제17] 0번 인덱스에 마지막 데이터를 삭제해주세요.
+king[0].pop()
+
+2. tuple 
+- 수정, 삭제, 추가 불가.
+- ()
+
+tuple1= () # 변경 수정을 할 수 없어서 선언하는 의미가 없음.
+type(tuple1)
+
+tuple2= 10,20 # 괄호 표현을 하지 않아도 결과는 괄호로 묶어져 나온다.
+type(tuple2)
+
+tuple3= (10,) #하나의 값은 투플 불가. 쉼표를 이용해야한다. 
+type(tuple3)
+
+tuple4 = (10,20,30)
+type(tuple4)
+
+tuple5=(1,2,('a','b')) # 중첩 가능.
+tuple5
+tuple5[2][0]
+
+tuple6=[1,2,('a','b')] # list 안에 tuple 중첩 가능.
+tuple6
+type(tuple6)
+type(tuple6[2])
+
+x= (1,2,3)
+y=(4,5,6)
+z = x + y # tuple간 extend 가능.
+type(z)
+
+
+# 오류 
+x.extend(y) # 추가 불가.
+y.extend(x) 
+z.append(7)
+
+z[0]=10 # 변경 불가 
+z.sort()
+ 
+del z[0] # 삭제 불가.
+z.pop()
+z.remove(1)
+
+sorted(z)
+sorted(z,reverse=True)
+type(sorted(z)) # 리스트로 변경되면서 미리보기가 가능.
+ 
+z.reverse() # 역순 출력 불가. 
+z[::-1]
+ 
+# 1이 있는 위치
+z.index(1) # 오류
+z.find(1) # 오류
+z.count(1)
+
+
+# 아래의 기능들은 리스트에서도 적용이 가능하다
+x=1,2,3
+x
+one=x[0]
+two=x[1]
+three=x[2]
+
+one,two,three = x # 이렇게 해도 개별변수에 넣어진다 
+four,five = x # 갯수가 달라서 안됨 
+
+one,two=x[0:2]
+
+
+3. dictionary 
+- key, value 값을 가지는 자료형.
+    - {key : value}
+- 단어에 대한 빈도수 체크 , 유니크한 단어만 뽑아내야 할 때 많이 사용
+
+dic = {}
+type(dic)
+
+dic = {'이름':'홍길동',
+       '전화번호':'010-1000-0001',
+       '주소':'서울시'}
+dic['이름']
+
+dic.keys()
+dic.values()
+dic.items()
+
+sports = {'축구':'메시',
+          '농구':'하든',
+          '야구':'박찬호'}
+sports['축구']
+
+sports['컬링'] = '김영미' #새로운 키,값을 추가
+
+del sports ['컬링'] # 키, 값 삭제
+
+sports['컬링']=['김은정','김경미','김영미','김선영','김초희'] # 중첩 가능 
+sports
+
+# value 값 확인 
+sports['농구']
+sports.get('농구') 
+
+sports['스키'] #키가 없으면 오류
+sports.get('스키') #키가 없으면 none으로 리턴
+
+# T, F return
+'농구' in sports.keys()
+'스키' in sports.keys()
+'메시' in sports.values()
+'김영미' in sports.values() # 리스트 변수기 때문에 따로 떨어져서는 True/False 판단이 안됨. 
+['김은정','김경미','김영미','김선영','김초희'] in sports.values()
+
+# value 값만 삭제하고 싶을 때 
+sports['축구'] = []
+sports
+
+# value 수정 
+sports['축구']='손흥민'
+sports
+
+v = sports.values()
+
+type(v)
+list(v) # list 자료형으로 변경
+
+4. set
+- 집합 자료형
+- 리스트랑 비슷하지만, 인덱스 순서가 없다.
+- 중복을 허용되지 않는다. 유니크화 할때 주로 사용.
+- {}
+
+s= {1,2,2,3,3,4,4,1,2,3}
+type(s)
+
+lst = [1,2,3,4,5,1,2,3,4,5]
+lst
+list(set(lst)) # set 자료형으로 변환하면 유니크한 값만 얻을 수 있다.
+
+
+--------------------------------------------------------------------------------
+
+x={1,2,3,6}
+y={1,2,3,4,5}
+
+# 합집합
+# union all은 list 후 extend 
+x.union(y)
+y.union(x)
+x|y
+
+# 교집합
+x.intersection(y)
+y.intersection(x)
+x&y
+
+# 차집합
+x.difference(y)
+x-y
+y.difference(x)
+y-x
+
+# 대칭차집합(symmetric difference)
+## 한 집합에는 포함할 수 있지만 두 집합 전부에는 포함되지 않는 원소들의 집합.
+(x-y).union((y-x))
+x.difference(y).union(y.difference(x))
+
+x.symmetric_difference(y)
+x^y
+
+# 서로소 집합(disjoint set)
+## 공통된 원소가 없는 집합
+## True/False 로 반환 
+{1,2,3}.isdisjoint({1,2,3})
+{1,2,3}.isdisjoint({4,5,6})
+
+x.isdisjoint(y)
+y.isdisjoint(x)
+
+# 부분집합(subset)
+x = {1,2,3}
+y = {1,2,3,4}
+
+x.issubset(y) # 집합 x는 y의 부분집합
+x <= y # 파이썬에서는 이렇게 부분집합을 표시 함 (= x ⊂ y)
+y.issubset(x) #상위집합이라 false 나옴
+y.issuperset(x) # 상위집합인지 확인 하는 함수 
+
+
+1 in x
+7 in x
+
+x[0] #인덱스 사용 불가
+
+x.add(7)
+x
+
+# update : 집합에 여러개의 값을 추가 
+x.update([8,9,10,11]) 
+x
+
+x.remove(10) # 집합에서 값을 삭제 
+x
+
+
+------------------------------------------------------------------------------
+5. bool
+- True, False를 나타내는 자료형 
+
+x = True 
+y = False 
+
+type(x)
+type(y)
+
+x == y
+1 == 1
+2 > 1
+2 >=1
+1 < 2
+1 <= 2
+1 != 2
+
+# 조건제어문(if)에서 True 표현 방법 = 1
+
+bool(1)
+bool(-1)
+bool('홍길동')
+bool('python')
+bool([1,2,3])
+bool((1,2,3))
+bool({1,2,3})
+not 0
+not None
+
+# 조건제어문(if)에서 False 표현 방법 = 0
+
+bool(0)
+bool(None)
+bool([])
+bool(())
+bool({})
+bool('')
+bool("")
+not 1
+not -1
+
+
+■ 파이썬 변수 복제 시 주의
+- a = b시, 같은 메모리 공간을 사용하기 때문에 a에 변화가 있을 시 b도 함께 변한다. 
+
+a = [1,2,3]
+a 
+b = a
+b
+
+a[0] = 10
+a
+b 
+
+id(a)
+id(b)
+
+b[1]= 20
+b
+a
+
+# 면접에서 묻는 경우 있음 
+## 다른 메모리 공간을 사용하기 위해서는 : 사용
+a = [1,2,3]
+c = a[:] # a변수를 복제하지만 서로 다른 메모리 공간을 사용한다.
+a[0]= 10
+c
+id(a)
+id(c)
+
+# copy.deepcopy(): 슬라이싱과 같은 효과를 줌. 영향을 주지 않는다. 
+import copy
+
+a = [1,2,3]
+d = copy.deepcopy(a)
+a[0]=10
+a
+d
+
+■ input()
+- 사용자로 부터 입력값을 받는 함수 
+- 문자형으로 전달한다.
+- console에서 입력 가능
+
+x = input()
+콘솔창에서 입력 
+x
+type(x)
+
+y = input()
+x + y # 문자라서 연결연산자 처럼 나오게 된다.
+int(x)+int(y) # 이렇게 해야지 사칙연산이 된다 
+
+x = int(input())
+y = int(input())
+x + y 
+
+■ 조건제어문
+1. if 문
+
+if 조건문 : 
+    수행해야 할 문장 
+
+if 조건문:
+    True 수행해야할 문장
+else : 
+    False 수행해야할 문장
+    
+x = 10
+# 들여쓰기가 안되면 컴파일시 오류 날 수 있다.
+if x==10 :
+    print("멋진 인생을 살자!!")
+
+x = 5
+if x==10 :
+    print("멋진 인생을 살자!!")
+else :
+    print("오늘 하루도 {}배 행복하자".format(x))
+
+# 무조건 트루 인 조건
+if 1:
+    print('참')
+else :
+    print('거짓')
+    
+if 0:
+    print('참')
+else :
+    print('거짓')
+
+if [1]:
+    print('참')
+else :
+    print('거짓')
+
+if []:
+    print('참')
+else :
+    print('거짓')
+
+x = 12
+if x>10 and x%2==0 :
+    print("참")
+else: 
+    print("거짓")
+
+
+# if 조건문의 특이점 
+## and 조건의 둘 다 True여야지 True가 출력되는데 이미 x>10에서 False였기 때문에 효율을 위해 1/x==0는 생략해 division by zero가 아닌 false결과가 출력된다 .
+x=0
+if x>10 and 1/x==0 :
+    print("참")
+else: 
+    print("거짓")
+
+# &를 이용하면 기존 and의 조건에 맞게 결과가 출력된다
+## and와 다르게 뒤 조건을 생략하지 않는다. 
+x=0
+if x>10 & 1/x==0 :
+    print("참")
+else: 
+    print("거짓")
+
+
+# or도 뒤에 조건은 고려하지 않는다. 
+x=0
+if x<10 or 1/x>=0 :
+    print("참")
+else: 
+    print("거짓")
+
+# |은 뒤에것도 무조건 참조한다
+x=0
+if x>10 | 1/x >= 0 :
+    print("참")
+else: 
+    print("거짓")
+
+
+num = int(input('점수를 입력해 주세요 : '))
+
+# 다시 조건을 평가하는 방법 : elif 
+if 90 <= num <= 100:
+    grade = 'A'
+elif 80 <= num:
+    grade = 'B'
+elif 70 <= num:
+    grade = 'C'
+elif 60 <= num:
+    grade = 'D'
+else :
+    grade = 'F'
+
+print('학점은',grade)
+
+
+------------------------------------------------------------------------------
+
+[문제18] 숫자를 입력값으로 받아서 그 값이 짝수면 짝수, 홀수면 홀수를 출력해세요.
+
+x = int(input ('숫자를 입력해주세요: '))
+
+if x % 2 == 0:
+    print('짝수')
+else :
+    print('홀수')
+
+    
+[문제19] 한글, alphabet만 입력받아서 문자를 출력하고 아니면
+"다른 문자가 포함되어 있습니다"를 출력해주세요.
+
+txt = input('문자를 입력하세요 : ')
+if txt.replace(' ','').isalpha():  # replace를 추가한 이유 : 공백문자가 한글/알파벳에 포함되지 않기 때문. 
+    print(txt)
+else:
+    print('다른 문자가 포함되어 있습니다.')
+
+
+[문제20] 숫자를 입력값으로 받아서 숫자면 입력받은 숫자를 출력하고 아니면 "숫자 이외의 문자가 포함되어 있습니다" 출력해주세요.
+
+num = input('숫자를 입력해주세요 : ')
+type(num)
+
+if num.isnumeric():
+    print(num)
+else:
+    print('숫자 이외의 문자가 포함되어 있습니다')
+
+.isnumeric() 
+# 문자 method. 문자변수에서 사용한다. 수치형 자료에서는 사용이 불가하다.
+# 정수형만을 포함하는 것이기 때문에 실수형은 파악하지 못한다.
+
+# isintance : 형을 확인하는 방법 
+num = 1
+type(num)
+num.isnumeric() # 문자변수에서 사용. 수치형 자료에서 오류.
+isinstance(num,int)
+isinstance(num,float)
+
+num = 1.2
+type(num)
+num.isnumeric() 
+isinstance(num,int)
+isinstance(num,float)
+
+del str
+txt = '100'
+type(txt)
+isinstance(txt,int)
+isinstance(txt,float)
+isinstance(txt,str)
+
+t = True
+isinstance(t,int)
+isinstance(t,float)
+isinstance(t,str)
+isinstance(t,bool)
+
+# Bool Type인데 사칙연산이 된다. (수치형으로 표현이 가능해서 그런 것인가?)
+x = True
+y = True
+x + y 
+
+#  빈 문자열과 none은 다르다
+x = ''
+type(x)
+
+y = None
+type(y)
+
+x == y
+
+if x == '':
+    print('참')
+else:
+    print('거짓')
+
+if x == None:
+    print('참')
+else:
+    print('거짓')
+
+if y == None:
+    print('참')
+else:
+    print('거짓')
+
+
+sal = 10000
+comm = None
+
+# None이 포함되어 있을 경우 오류가 난다.
+sal * 12 + comm
+
+if comm is None:
+    annual = sal * 12
+else:
+    annual= sal * 12 * comm
+
+annual
+
+# if else를 이렇게도 표현 할 수 있다 
+annual = sal * 12 if comm is None else sal * 12 + comm
+annual
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+■ 반복문
+1. while 
+- 조건이 True 인 동안 반복을 수행하는 반복문
+
+while 조건문 :
+    반복수행할 문장
+
+while 1: 
+    print("짜증나") # true라서 무한루프
+    
+while 0:
+    print('멋진 인생 살자') #false 라서 돌아가지 않는다
+
+i = 1
+while i <= 10:
+    print(i)
+    i += 1
+    
+    
+-------------------------------------------------------------------------------
+[문제 21] 1부터 100까지의 합을 구하세요.
+
+i=1
+sum=0
+
+while i<=100:
+    i += 1
+    sum=sum+i
+    
+print(sum)
+
+    
+[문제22] 1부터 100까지 3의 배수를 출력하고 합도 구하세요.
+
+# 해설 1
+i = 1
+sum = 0
+
+while i <= 100:
+    if i % 3 == 0:
+        print(i)
+        sum += i
+    i += 1
+print(sum)
+
+# 해설 2
+i = 0
+result = 0
+while i < 100:
+    i += 3 # i = i+3
+    if i >100: 
+        break #break를 주지 않으면 100을 초과하게 됨 
+    else:
+        print(i)
+        result += i
+result
+
+# 해설 3 
+i = 0
+sum = 0
+
+while 1:
+    i+=1
+    if i%3==0:
+        print('3의 배수: %d' %i)
+        sum=sum+i
+    if i==100:
+        print('3의 배수 총 합: %d' %sum)
+        break
+
+
+[문제 23] 1부터 10까지 홀수값만 출력해주세요
+
+# 해설 1 : 더하기 
+i = 1
+while i<=10:
+    print(i)
+    i += 2
+
+# 해설 2 : 나누기    
+i = 1
+
+while i < 10:
+    if i % 2 ==0:
+        i += 1
+        continue
+    if i> 10:
+        break
+    print(i)
+    i+= 1

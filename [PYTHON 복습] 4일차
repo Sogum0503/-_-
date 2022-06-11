@@ -1,0 +1,465 @@
+
+[4일차]
+
+[문제36] apple단어를 아래 화면같이 출력해주세요.
+ ['a', '*', '*', '*', 'e']
+
+# 해설 1: 
+lst =[]
+
+'a' in 'apple'
+'e' in 'apple'
+'b' in 'apple'
+
+for i in 'apple':
+    if i in 'ae':
+        lst.append(i)
+    else: 
+        lst.append('*')        
+
+lst
+
+# 해설 2: 
+x = []
+x = [i if i in 'ae' else '*' for i in 'apple']
+
+------------------------------------------------------------------------------
+
+■ 함수 
+- 기능의 프로그램.
+- 반복되는 코드를 하나로 묶어서 처리하는 방법.
+- def로 선언.
+
+# 선언
+def 함수이름(인수,인수,...): # 형식 매개변수 
+    수행 할 문장
+    .....
+    [return 값] # optional
+ 
+# 불러오기 
+함수이름(인수,인수,...)
+ 
+def message():
+    print("오늘 하루도 행복하자!!")
+
+message()
+
+def message():
+    print("오늘 하루도 행복하자!!")
+    return 'happy'
+
+message()
+
+x = message() 
+x # return값 단독 출력 
+
+[문제37] 함수에 두개의 숫자를 인수값으로 받아서 값을 비교하는 함수를 생성하세요.
+
+num_compare(10,5)
+10은 5보다 크다
+
+def num_compare(a,b):
+    if a > b:
+        print('{}은 {}보다 크다'.format(a,b))
+    elif b > a:
+        print('{}은 {}보다 크다'.format(b,a))
+    else:
+        print ('{}은 {}와 같다'.format(a,b))        
+
+
+def hap(arg1,arg2):
+    return arg1+arg2
+
+hap(1,2)
+hap(1,2,3,4,5) # 고정인수기 때문에, 초과하는 갯수의 값은 도출하지 못한다.
+
+# *arg : 가변인수 설정
+
+def 함수이름(*가변인수):
+    for i in 가변인수:
+        수행할 문장
+
+def hap(*arg):
+    total = 0
+    for i in arg:
+        total += i
+    return total
+
+hap(1,2)
+hap(1,2,3,4,5)
+hap(1,2,3,4,5,8,8,8,8,8,8)
+
+[문제38]여러 숫자를 인수값으로 받아서 합과 평균을 출력하는 aggF함수를 생성하세요.
+
+aggF(1,2,3,4,5,6,7,8,9,10)
+
+합 :  55
+평균 : 5.5
+
+[me]    
+def aggF(*arg):
+    total = 0 # local variable 
+    count = 0
+    mean = 0
+    
+    for i in arg:
+        total += i
+    print('합 : {}'.format(total))
+        
+    for i in arg:
+        count = len(arg)
+        
+    for i in arg:
+        mean = total/count
+    print('평균 : {}'.format(mean))
+
+[teacher]
+def aggF(*arg):
+    result = 0
+    cn = 0
+    for i in arg:
+        result += i
+        cn += 1
+    print('합 : ',result)
+    print('평균: ',result/cn)
+
+# or 
+
+def aggF(*arg):
+    result = 0
+    for i in arg:
+        result += i
+    print('합 : ',result)
+    print('평균: ',result/len(arg))
+
+
+x = list(range(1,11))
+aggF(x)
+''' 가변인수로 설정되어있는 aggF에 리스트를 넣으면 오류 발생
+    해결방법: 가변인수가 아닌 고정인수 (arg) 삽입 '''
+
+def aggF(arg):
+    result = 0
+    cn = 0
+    for i in arg:
+        result += i
+        cn += 1
+    print('합 : ',result)
+    print('평균: ',result/len(arg))
+
+aggF(x)
+
+# 고정인수, 가변인수 복합 적용 가능 
+
+def 함수이름 (인수1, *인수2):
+    수행할 문장 
+
+--------------------------------------------------------------------------------
+
+[문제39] cal함수를 생성하세요.
+
+cal('sum',1,2,3,4,5)
+cal('multiply',1,2,3,4,5)
+cal('hello',1,2,3,4,5)
+
+def cal(arg1, *arg2):
+    if arg1.lower() == 'sum':
+        total = 0
+        for i in arg2:
+            total += i
+    elif arg1.lower() == 'multiply':
+        total = 1
+        for i in arg2:
+            total *= i
+    else:
+        total = None
+    
+    return total
+
+# ** : dictionary형 가변인수
+## **arg는 실제 dict이긴 한데 모양을 바꿔야함 
+
+def dict_fun(**arg):
+    for key, value in arg.items():
+        print(key,value)
+
+## [주의]: 함수일 때와 dict일 때와의 표현식이 다르다. 
+
+dict_fun(name='홍길동',addr='서울',sal=3000)
+
+my_dict = {'name':'홍길동','addr':'서울','sal':3000}
+
+for key, value in my_dict.items():
+    print(key,value)
+
+dict_fun(my_dict) # 오류 
+dict_fun(**my_dict) # dictionary 변수를 입력할 경우 **(dict형 가변인수)를 붙여야 한다
+
+def hap(*arg):
+    total = 0
+    for i in arg:
+        total += 1
+    return total
+
+hap(1,2)
+hap([1,2,3,4,5]) # 오류 
+
+'''tuple과 list값을 입력하기 위해서는 *을 붙이기 '''
+hap(*[1,2,3,4,5]) 
+hap(*(1,2,3,4,5)) 
+
+'''return을 만나는 순간 함수는 종료된다'''
+
+def f1(arg1,arg2):
+    return arg1+arg2 # 첫번째 return문만 수행된다. return을 만나는 순간 종료.
+    return arg1*arg2
+
+f1(2,3)
+
+# 옆으로 나열했을 때, tuple 형식으로 출력된다 
+def f1(arg1,arg2):
+    return arg1+arg2, arg1*arg2, arg1-arg2, arg1/arg2
+
+f1(2,3)
+
+x1, x2, x3, x4 = f1(2,3) # 각 변수에 지정하기 가능.
+x1
+x2
+x3
+x4
+
+
+# return 문을 만나는 순간 프로그램은 종료가 된다
+
+def f2(arg1,arg2):
+    if arg2 == 0:
+        return None
+    else:
+        return arg1/arg2
+f2(4,2)
+f2(4,0)
+
+def f2(arg1,arg2):
+    if arg2 == 0:
+        return # return 문을 만나게 되면 프로그램은 종료
+        print("return문을 만나는 순간 프로그램 종료") # 리턴 아래로 프로그램은 실행되지 않음 
+    else:
+        return arg1/arg2
+
+f2(4,2)
+f2(4,0)
+
+# default 값을 선언하는 방법
+def f3(name, age, gender = 'M'):
+    print('이름 : ',name)
+    print('나이 : ',age)
+    if gender.upper() == 'M':
+        print('성별 : 남자')
+    else:
+        print('성별 : 여자')
+        
+f3('홍길동',20)
+f3('홍재인',20,'F')
+f3('홍길동') #age는 default값 선언을 안해놔서 오류가 뜸 
+f3('홍길동','M',20) # 순서대로 입력하지 않으면 오류가 뜸
+                    # 실제 매개변수값은 형식 매개변수에 위치적으로 대응되게 입력해야 함
+
+# 순서 상관없이 만들고 싶다면?
+## 형식 매개변수의 이름을 기준으로 실제 매개변수를 입력
+f3(name='홍길동',gender='M',age=20) 
+
+[면접]
+
+# 전역변수(global): 프로그램이 종료될 때 까지 어디서든지 사용할 수 있는 변수.
+    ## 오픈하면 안되는 변수는 로컬로 설정해 두는 것이 좋다.
+# 지역변수(private,local): 함수에서만 사용하는 변수.
+
+global_v = 10 #전역변수(global)
+
+def f4(arg1):
+    print('변수값 : ', arg1)
+    print('global 변수값 : ',global_v)
+
+f4(global_v)
+global_v + 100 # 전역변수이기 때문에 어디서든지 사용이 가능하다.
+
+
+g_v = 10 # 전역변수(global)
+
+def f4(arg1):
+    print('변수값 : ', arg1)
+    g_v=20 # 전역변수와 동일한 이름을 설정해도 다르게 출력된다.
+    print('local 변수값 : ',g_v)
+    
+f4(g_v)
+print(g_v)
+
+
+# global : 함수 안에서 전역변수를 조작하고 싶을 때 
+g_v = 10 # 전역변수(global)
+
+def f4(arg1):
+    print('변수값 : ', arg1)
+    global g_v
+    g_v=20 # 전역변수(global)
+    print('global 변수값 수정: ',g_v)
+    
+f4(g_v)
+print(g_v)
+
+[문제40] 입력값을 더하는 함수를 작성하세요.
+
+예시 :
+print(add(2))
+2
+
+print(add(8))
+10
+
+해설 :
+    
+g_total = 0
+
+def add(arg):
+    global g_total #지정해야지 전역변수에 차곡차곡 쌓임 
+    g_total += arg
+    return g_total
+
+print(add(2))
+print(add(8))
+print(add(11))
+
+'''문제 40에서 g_total 을 함수 밖에 선언하지 않은 채로 
+더하는 게 누적되도록 할 수 있나요?'''
+    ## 없다. 무조건 밖에서 먼저 선언을 해야한다. 함수 내에서 전역변수를 선언할 수 없다
+
+
+[문제 41] 약수를 구하는 divisor 함수를 생성해주세요.
+
+divisor(10)
+
+def divisor(arg):
+    for i in range(1,arg+1):
+        if arg%i == 0:
+            print(i, end= ' ') 
+divisor(1000) # 숫자가 커질수록 반복이 커져서 비효율적이다 
+              # 자신의 값을 제외하고 반 이상의 수는 출현하지 않는걸 보여준다.
+
+def divisor(arg):
+    num = []
+    for i in range(1,arg//2+1):
+        if arg%i==0:
+            num.append(i) 
+    num.append(arg) # 자기 자신 값이 제외 되어서 arg 넣어주기
+    return num
+divisor(100) #입력한 수의 반 이상은 넘어가지 않는다
+
+range(1,10/2+1) #range에 float은 들어가지 않는다
+
+list(range(1,int(10/2+1))) # 실수형
+list(range(1,10//2+1)) # 실수형을 사용하지 않고 몫만 가져온다.(=반의 값이 나오는 것)
+
+# 한 줄로 만들어보기
+def divisor(arg):
+    num = [i for i in range(1,arg//2+1) if arg%i == 0]
+    num.append(arg)
+    return num
+
+divisor(10)
+
+[문제 42] 분산을 구하는 함수를 작성해주세요
+varianceF(1,2,3,4,5)
+
+합(sumF) = 관측값의 합
+평균(meanF) = 관측값의 합/ 관측값의 수
+편차 = 관측값 - 평균
+편차제곱의합 = 편차**2 + 편차**2
+분산 = 편차제곱의 합/ 관측값의 수-1(자유도)
+
+sum(1,2,3,4,5)
+meanF(1,2,3,4,5)
+varianceF(1,2,3,4,5)
+
+# sumF
+def sumF(*arg):
+    total = 0
+    for i in arg:
+        total += i
+    return total
+
+sumF(1,2,3,4,5)
+
+# meanF
+def meanF(*arg):
+    return(sumF(*arg)/len(arg)) # sum에 * 표현을 꼭 해줘야 한다 
+
+meanF(1,2,3,4,5)
+
+# varianceF
+
+def varianceF(*arg):
+    avg = meanF(*arg)
+    total = 0
+    for i in arg:
+        total += (i - avg)**2
+    return total/(len(arg)-1)
+
+varianceF(1,2,3,4,5)
+
+# 표준편차를 구해보자 (루트 씌우기)
+import math
+
+def stddevF(*arg):
+    return math.sqrt(varianceF(*arg))
+
+stddevF(1,2,3,4,5)
+
+## 위에 것 같이 만드는걸 모듈식 개발 
+### 따로 만든 다음에 호출해서 (종속관계) 사용하는 것
+
+''' 함수 등록시키는 방법
+1) 위에 있는 함수들을 다 복사하기 (주석이나 함수 불러오는건 삭제)
+2) py 확장자로 해서 저장하기 (이때 file 이름이 함수의 이름이 된다)
+3) improt sys를 하고 sys.path.append에 그 파일이 존재하는 폴더 이름을 불러오기
+4) 그러고 나서 import 하면 된다
+    4-1) dir(함수이름) : 함수 확인 가능
+'''
+import sys
+sys.path
+
+sys.path.append('C://mypython') # 새로운 디렉토리 등록
+sys.path.remove('C://mypython') # 디렉토리 삭제
+
+import stats
+del stats
+
+dir(stats) #함수 확인 가능 
+dir()
+
+stats.sumF(1,2,3,4,5)
+stats.meanF(1,2,3,4,5)
+stats.varianceF(1,2,3,4,5)
+stats.stddevF(1,2,3,4,5)
+
+# stats 안에 있는 모든 method 들이 import 된다 
+## 컴퓨터를 종료하기 전 까지 메모리에 떠있는 상태 
+from stats import*
+
+sumF(1,2,3,4,5) # 바로 method 쓰면 된다. 앞에 stast. 넣으면 오류
+meanF(1,2,3,4,5)
+varianceF(1,2,3,4,5)
+stddevF(1,2,3,4,5)
+
+# from stats import*로 불러오면 이렇게 하나하나 지워야 한다
+del sumF
+del meanF
+
+
+''' 만약 stats에 함수를 추가하고 싶을 때?
+    : 메모장에서 수정을 하고 import.
+'''
+
+''' del 해서 함수명 하나씩 지워야되는게 저희가 모듈 만들기 전에
+함수 들을 만들고, 그걸 모듈에 대입해서 그런거 같아요
+아예 꺼서 메모리 날리고 나서 stats 모듈을 탑재하고 삭제하면 잘 적용 되네요'' 
+''''

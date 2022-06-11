@@ -1,0 +1,348 @@
+
+[문제24] 1부터 10까지 출력하세요. 단 4,6 은 제외하세요.
+
+# 해설 1
+i = 1
+while i <= 10:
+    if i == 4 or i == 6:
+        i += 1
+        continue 
+    else : 
+        print(i)
+        i += 1    
+
+# 해설 2
+i = 1
+while i <= 10:
+    if i !=4 and i != 6:
+        print(i)
+    i += 1
+
+# 해설 3    
+i = 1
+while i <= 10:
+    if i in [4,6]:
+        i += 1
+        continue
+    else:
+        print(i)
+        i+=1
+
+[문제25] 단을 입력값으로 받아서 구구단을 출력해주세요.
+
+dan = int (input ("단을 입력해주세요 : "))
+
+# 해설 1
+i = 1
+while i < 10:
+    print("{} * {} = {}".format(dan,i,dan*i))
+    i += 1
+
+# 해설 2
+i = 1
+while i < 10:
+    print("%d * %d = %d"%(dan,i,dan*i))
+    i += 1
+
+[문제 26] 2단~ 9단까지 구구단을 출력해주세요
+
+# 해설 1
+dan = 2
+while dan <= 9:
+    i = 1
+    print("{} {}단 {}".format("*"*2,dan,"*"*2))
+    while i <= 9:
+        print("%d * %d = %d"%(dan,i,dan*i))
+        i += 1
+    dan += 1
+    
+    
+# 해설 2
+i=1
+while i<9:
+    j=0
+    i=i+1
+    print('--%d단--' %(i))
+    while j<9:
+        j=j+1
+        print('%d*%d=%d' %(i,j,i*j))
+        
+
+[문제 27] 2단을 가로로 출력해주세요
+
+2*1=2 2*2=4 2*3=6
+
+# 해답 1
+i = 1
+result = ''
+while i <= 9:
+    result = result + '{}*{} = {} '.format (2,i,2*i)
+    i += 1
+result
+
+
+# 해답 2
+i = 1
+result = ''
+while i <= 9:
+    result = result + '{} * {} = {}'.format (2,i,str(2*1).ljust(4))
+    i += 1
+result 
+
+
+# 해답 3 
+i = 1
+result = ''
+while i <= 9:
+    result= result + '2 * '+str(i)+' = '+str(2*1).ljust(5)
+    i += 1
+    
+result
+
+# end: 끝에 문자열 추가하기 가능
+i = 1
+while i <=9:
+    print('{} * {} = {}'.format(2,i,2*i),end='\n')
+    i += 1
+  
+i = 1
+while i <=9:
+    print('{} * {} = {}'.format(2,i,2*i),end=' ')
+    i += 1
+
+i = 1
+while i <=9:
+    print('{} * {} = {}'.format(2,i,2*i),end='다음 ')
+    i += 1
+    
+--------------------------------------------------------------------------------
+
+2. for 문 
+- list, tuple, 문자열의 첫번재 값부터 마지막 값 까지 순서대로 변수를 입력해 반복 수행한다. 
+
+for 변수 in (리스트,튜플,문자열):
+    반복수행할 문장
+    
+x=['sql','r','python']
+x
+for i in x:
+    print(i)
+    
+for i in 'python': 
+    print(i) #파이썬의 스펠링 하나씩 출력이 된다
+    
+x = [(1,2),(3,4),(5,6)]
+x[0][0]
+x[0][1]    
+x[0]
+
+a,b = x[0]
+a
+b
+
+for a,b in x:
+    print(a,b)
+    
+for a,b in x:
+    print(a+b)
+    
+[문제29] 학생들의 점수가 90,55,63,78,80점이 있습니다. 60점 이상 이면 합격, 60점 미만이면 불합격 출력해 주세요.
+
+score = [90,55,63,78,80]
+
+# 해설 1
+for i in sorted(score):
+    if i > 60 :
+        print('{}점 : 합격'.format(i))
+    else:
+        print('{}점 : 불합격'.format(i))
+
+# 해설 2 : 리스트에 넣어서 출력 
+score = [90,55,63,78,80]
+v_pass = []
+for i in score:
+    if i >= 60:
+        v_pass.append('합격')
+    else:
+        v_pass.append('불합격')
+
+v_pass
+
+# 해설 3 : 리스트로 출력         
+v_pass = ['합격' if i>=60 else '불합격' for i in score]
+v_pass
+
+
+[문제 30] x 리스트 변수에 1,2,3,4,5 있습니다. y 변수는 x 변수의 값을 2곱한 값으로 입력해주세요 
+
+x = [1,2,3,4,5]
+y = []
+
+# 해설 1
+for i in x:
+    y.append(i*2)
+y
+
+[i for i in x]
+[for i in x ] #문법 오류, 출력되는 값이 없다 
+
+
+■ 리스트 내장 객체 (list comprhension)
+# 사용 많음 
+
+- 기본 모양 :
+[표현식 for 변수 in 반복 가능한 객체]
+
+y = [i * 2 for i in x]
+
+[i * 2 for i in range(1,6,1)]
+
+■ range : 시퀀스 생성 
+for i in range(1,11,1):
+    print(i)
+
+list(range(1,11,1))
+list(range(1,11,2))
+list(range(1,101,1))
+
+
+[문제31] lst1,lst2 변수를 생성한 lst3변수에 아래와 같은 값을 입력해주세요.
+
+lst1 = [1,2,3]
+lst2 = [4,5,6]
+
+
+lst3 
+[4, 5, 6, 8, 10, 12, 12, 15, 18]
+
+# 해설 1
+lst3 = []
+for i in lst1:
+    for j in lst2:
+        lst3.append(i*j)
+    
+lst
+
+# 해설 2 : 리스트 내장 객체 
+## [표현식 for 변수 in 반복가능한 객체 for 변수 in 반복가능한 객체]
+lst3 =[i*j for i in lst1 for j in lst2]
+
+
+[문제 32]1~100 까지 짝수만 x 변수에 입력해주세요
+
+# 해설 1
+x=[]
+for i in range(1,101,1):
+    if i % 2 == 0:
+        x.append(i)
+x
+
+# 해설 2 : 리스트 내장 객체 
+
+[i for i in range(1,101) if i % 2 == 0]
+[ "짝수" if i%2 == 0 else "홀수" for i in range (1,101)]
+
+[문제33] 튜플변수에 사과, 귤, 오렌지, 배, 포도, 바나나, 자몽, 키위, 딸기, 블루베리, 망고를 입력하시고 
+        과일 이름 중에 세글자 이상인 과일만 fruit_lst변수에 입력해주세요.
+
+fruit = ("사과", "귤", "오렌지", 
+         "배", "포도", "바나나", "자몽",
+         "키위", "딸기", "블루베리", "망고")
+
+# 해설 1 
+fruit_lst = []
+
+for i in fruit:
+    if len(i) >=3:
+        fruit_lst.append(i)
+
+fruit_lst
+
+# 해설 2 : 리스트 내장 객체 
+
+fruit_lst = [i for i in fruit if len(i) >=3]
+
+[문제34] 과일의 빈도수를 만들어 주세요.
+
+fruit = ("사과","귤","오렌지","배","포도","바나나","키위","딸기","블루베리", "망고",
+         "수박","사과","귤","키위","포도","바나나","사과","딸기","블루베리", "망고",
+         "사과","귤","오렌지","배","포도","바나나","사과","딸기","파인애플")
+
+fruit.count("사과")
+fruit.count("귤")
+fruit.count("오렌지")
+
+for i in set(fruit):
+    print(fruit.count(i))
+
+for i in set(fruit):
+    print('{}:{}'.format(i,fruit.count(i)))
+
+
+[문제 35] dictionary 자료형을 이용해서 과일의 빈도수를 만들어 주세요
+
+{ 파인애플 : 1
+ 망고 : 2
+ 오렌지 : 2
+ 바나나 : 3
+ .....
+ }
+
+fruit_dict={}
+fruit_dict.keys()
+fruit_dict.values()
+fruit_dict.items()
+
+
+1) 만약에 '사과'라는 key가 없으면 : 등록 시키기 
+    fruit_dict['사과'] = 1
+2) 만약에 '사과'라는 key가 있으면 : 기존의 key에 값을 추가 
+    fruit_dict['사과']=fruit_dict['사과']+1
+
+fruit_dict={}
+
+for i in fruit:
+    if i not in fruit_dict.keys():
+        fruit_dict[i]=1
+    else:
+        fruit_dict[i]=fruit_dict[i]+1
+        
+fruit_dict
+
+'''dict를 정렬해보자'''
+sorted(fruit_dict) # key 기준
+sorted(fruit_dict.keys())
+sorted(fruit_dict.items()) #key 기준
+
+# key 기준 내림차순 
+for k,v in sorted(fruit_dict.items(),reverse=True):
+    print(k,v)
+    
+sorted(fruit_dict,reverse=True) # key 기준
+sorted(fruit_dict.keys(),reverse=True)
+sorted(fruit_dict.items(),reverse=True) #key 기준
+    
+''' values 기준 내림차순 : operator '''
+import operator
+
+# itemgetter(0): key| itemgetter(1): value
+for k,v in sorted(fruit_dict.items(),key=operator.itemgetter(1),reverse=True):
+  print(k,v)  
+  
+  
+''' R의 table =  collections '''
+# dict의 모양으로 반환한다
+import collections
+
+x= collections.Counter(fruit)
+x.keys()
+x.values()
+x.items()
+
+for k,v in sorted(fruit_dict.items(),key=operator.itemgetter(1),reverse=False):
+  print(k,v)  
+
+# operator 에서도 동일하게 수행됨
+for k,v in sorted(x.items(),key=operator.itemgetter(1),reverse=True):
+    print(k,v)
+

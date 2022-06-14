@@ -1,0 +1,700 @@
+
+'''
+오늘 배운 것 
+
+1. 파일을 읽고 쓰기
+    'w' : 쓰기모드, 기존 파일이 존재 시, 내용을 지우고 새롭게 생성한다
+    'a' : append모드, 기존 파일이 존재 시, append하게 내용을 추가한다
+    'r' : 읽기모드로 파일을 읽어온다 
+'''
+
+[5일차]
+
+■ 파일 읽고 쓰기 
+
+# 쓰기 모드로 파일을 열기
+## w 모드는 기존 파일이 존재 시,기존 파일의 내용을 지우고 새롭게 생성한다.
+
+file = open("c:/data/test.txt",'w')
+file
+
+for i in range(11,20):
+    txt = '%d 오늘 하루도 행복하자. \n'%i
+    file.write(txt)
+    
+file.close()
+
+# a 모드는 append 모드로 파일을 열기
+# 기존 내용은 뒤에 추가
+file = open("c:/data/test.txt",'a')
+file
+
+for i in range(11,101):
+    txt = '%d 오늘 하루도 행복하자. \n'%i
+    file.write(txt)
+
+file.close()
+
+# r : 읽기 모드로 파일을 열기
+file = open("c:/data/test.txt",'r')
+file.readline() # 한줄 씩 읽어온다. 
+file.close()
+
+## while문을 이용해서 전체 내용을 읽어오기 
+### 몇개의 문장이 들어있는지 모르기 때문에, while문을 이용한다
+
+## solution 1:
+    
+file = open("c:/data/test.txt",'r')
+
+while True:
+    data = file.readline()
+    if not data: # data 변수에 ''값이 들어있기 때문에 False 이다.
+        break # 데이터가 없을 시, break. 안하면 무한루프에 빠짐 
+    print(data,end = '')
+
+file.close()  
+
+## solution 2:
+file = open("c:/data/test.txt",'r')
+
+while True:
+    data = file.readline()
+    if data == '':  # 빈 문자열이면 break걸자
+        break
+    print(data,end='') # 빈 문자열이 아니라면 여기로 떨어진다 
+    
+file.close()
+
+''' if not data == if data == '' 이 같은 로직인 이유는 무엇일까?
+    if 조건은 bool조건이 돌아가는 것'''
+    
+bool(not data) # 아무것도 없다 = True
+bool('') # False
+bool(' ') # 공백 문자가 들어있기 때문에 True
+
+# list 변수에 담아보자
+
+lst = []
+
+file = open("c:/data/test.txt",'r')
+
+while True:
+    data = file.readline()
+    if data == '': 
+        break
+    lst.append(data.rstrip()) # \n 지우기 
+
+lst
+
+file.close()
+
+
+''' text안에 있는 내용을 위 처럼 조건문 사용하지 않고 한꺼번에 읽어서 저장하고 싶을 때 
+                            file.readlines()
+'''
+
+file = open("c:/data/test.txt",'r')
+data = file.readlines() #모든 라인을 한꺼번에 읽어서 리스트에 저장
+data
+file.close()
+
+
+# \n 제거하기
+data = [i.rstrip() for i in data]
+
+''' text안에 있는 내용을 하나의 문장으로 읽어들이고 싶을 때 
+                file.read()
+'''
+
+file = open("c:/data/test.txt",'r')
+data = file.read() # 파일전체를 하나의 문자열로 리턴한다.
+data
+file.close()
+
+## 전처리 : \n  + 숫자를 없애는 방법은 ?! 
+string.replace(\n)
+
+
+''' file.close() 매번 하기 너무 귀찮다...
+            with문을 사용하자!            '''
+            
+● with 문:
+    파일 객체를 자동으로 닫아주는 문 
+    file.close() 안하면 file 이 계속 열려있어서 메모리 잡아먹음
+
+with open("c:/data/test.txt",'w') as file:
+    for i in range(1,11):
+        txt = '{} 멋진 하루를 살자\n'.format(i)
+        file.write(txt)
+        
+with open("c:/data/test.txt",'a') as file:
+    for i in range(11,21):
+        txt = '{} 멋진 하루를 살자\n'.format(i)
+        file.write(txt)
+
+with open("c:/data/test.txt",'r') as file:
+    data = file.readlines()
+
+data
+
+with open("c:/data/test.txt",'r') as file:
+    text = file.read()
+
+text
+
+■ csv
+csv 파일 읽기
+
+import csv
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+
+# file.readline()
+emp_csv = csv.reader(file)
+emp_csv # 아직은 객체 덩어리로 숨겨져있다
+
+next(emp_csv) # 첫 행인 컬럼 정보가 나온다.
+next(emp_csv) # 다음 행 출력.
+
+# for문을 이용 해 next를 반복하기.
+for i in emp_csv:
+    print(i)
+
+file.close()
+
+--------------------------------------------------
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+
+next(emp_csv) # 컬럼 이름을 버리기 위해 수행.
+
+for i in emp_csv: 
+    print(i[2],i[7]) #열의 정보를 뽑아내는 것 
+    
+file.close()
+
+--------------------------------------------------
+
+[문제43] last_name과 last_name의 길이를 출력해주세요.
+
+file = open("c:/data/학습용 데이터/employees.csv")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    print(i[2],len(i[2]))
+    
+    
+file.close()
+
+[문제44] employee_id, last_name, salary*12 결과를 출력해주세요.
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv: 
+    print(i[0],i[2],int(i[7])*12)
+    #열을 뽑아내는 것 
+
+file.close()
+
+
+[문제45] last_name, commission_pct를 출력하는데 
+        commission_pct값이 '' 이면 0으로 출력해주세요
+
+# 해설1:
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv: 
+    if i[8] == '':
+        print(i[2],0)
+    else:
+        print(i[2],i[8])
+    #열을 뽑아내는 것 
+
+file.close()
+
+# 해설2:
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv: 
+    print(i[2], 0 if i[8] == '' else i[8])
+
+file.close()
+
+
+[문제46] last_name, commission_pct를 출력하는데 
+        commission_pct값이 '' 이면 0으로 
+        ifnull함수를 이용해서 출력해주세요.
+        # 빈 문자열이면 0라는 값으로 리턴하는 method를 내가 만들어야 함. ifnull 함수 없음! 
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+def ifnull(arg1,arg2):
+    if arg1 == '':
+        return arg2
+    else:
+        return arg1
+    
+for i in emp_csv: 
+    print(i[2], ifnull(i[8],0))
+
+# 이런 다항 함수를 심플하게 만들 수 는 없을까?
+def f1(x,y):
+    return x+y
+f1(1,2)
+
+■ 람다(lambda) 함수
+- 이름이 없는 한줄짜리 함수
+- 왜? 가독성 때문에
+
+def f1(x,y):
+    return x+y
+f1(1,2)
+==
+(lambda x,y: x+y)(1,2)
+
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+
+for i in emp_csv: 
+    print(i[2], (lambda arg1,arg2: arg2 if arg1=='' else arg1)(i[8],0))
+
+file.close()
+
+[문제47] last_name을 대문자로 job_id 소문자로 출력해주세요.
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    print(i[2].upper(),i[-5].lower())
+
+file.close()
+
+[문제48] last_name을 첫글자만 추출해서 소문자로 출력해주세요.
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    print(i[2][0].lower())
+
+file.close()
+
+[문제49] last_name을 두번째 부터 마지막까지만 추출해서 대문자로 출력해주세요.
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    print(i[2][1:].upper())
+file.close()
+
+
+[문제50] 이름을 입력하면 첫글자는 대문자 나머지는 소문자를 출력하는 initcap함수를 이용해서 이름을 출력하세요.
+
+'hello world'.capitalize()
+'hello world'.title()
+
+def initcap(arg):
+    return arg[0].upper()+arg[1:].lower()
+
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    print(initcap(i[2]))
+   
+file.close() 
+
+#lambda 
+
+(lambda arg : arg[0].upper()+arg[1:].lower())('hello')
+
+file = open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+    
+for i in emp_csv:
+    print((lambda arg : arg[0].upper()+arg[1:].lower())(i[2]))
+   
+file.close() 
+
+
+
+■ 날짜함수
+
+import datetime
+dir(datetime)
+
+datetime.date.today()
+datetime.datetime.now() #맨 뒤는 마이크로 세컨드
+
+type(datetime.date.today())
+type(datetime.datetime.now())
+
+
+datetime.date.today().year
+datetime.date.today().month
+datetime.date.today().day
+
+type(datetime.date.today().year)
+type(datetime.date.today().month)
+type(datetime.date.today().day)
+
+
+datetime.datetime.now().year
+datetime.datetime.now().month
+datetime.datetime.now().day
+datetime.datetime.now().hour
+datetime.datetime.now().minute
+datetime.datetime.now().second
+datetime.datetime.now().microsecond
+datetime.datetime.now().date() #today와 같다
+datetime.datetime.now().time()
+datetime.datetime.now().weekday() # 0~6: 월~일 
+
+d = datetime.datetime.now()
+d
+type(d)
+type(d.year)
+
+
+# strftime : date -> char :
+    # 날짜 타입을 문자형으로 추출
+type(d.strftime('%x')) 
+
+d.strftime('%x') # 월/일/년
+d.strftime('%X') # 시:분:초
+d.strftime('%Y') # 년도 4자리
+d.strftime('%m') # 달
+d.strftime('%d') # 일
+d.strftime('%B') # 영문자 달 
+d.strftime('%b') # 영문자 달 약어
+d.strftime('%H') # 시 (24시간)
+d.strftime('%I') # 시 (12시간)
+d.strftime('%M') # 븐
+d.strftime('%S') # 초
+d.strftime('%A') # 영문 요일
+d.strftime('%a') # 영문 요일 약어
+d.strftime('%c') #  'Tue Sep 14 13:50:54 2021'
+d.strftime('%p') # AM, PM
+d.strftime('%j') # 누적 날짜
+d.strftime('%w') # 요일 0 : 일요일 ~ 6 : 토요일 
+d.strftime('%U') # 누적 주 (일요일 시작)
+d.strftime('%W') # 누적 주 (월요일 시작)
+d.strftime('%z') # timezone 
+
+
+# strptime : char -> date
+datetime.datetime.strptime('2021-09-14 14:03:00','%Y-%m-%d %H:%M:%S')
+
+# 직접 데이터를 입력해서 datetime 타입으로 만들고 싶을 때 
+datetime.datetime(2021,09,14) # 출력 안됨 0을 제외해야 한다
+datetime.datetime(2021,9,14)
+datetime.datetime(2021,9,14,14,6,0) #시분초 입력 가능
+
+# .combine: 합치기 가능 
+x= datetime.date(2021,9,14)
+y = datetime.time(14,7,0)
+datetime.datetime.combine(x,y)
+
+# date - date = 일수 출력 
+datetime.datetime(2021,9,14)- datetime.datetime(2021,6,29)
+(datetime.datetime(2021,9,14)- datetime.datetime(2021,6,29)).days #순수하게 일자만 뽑을 때
+
+# date + 일수 = date
+datetime.datetime(2021,9,14)+ datetime.timedelta(days=77)
+
+# date + hours/minutes/seconds/weeks = date
+datetime.datetime(2021,9,14,14,14,0) + datetime.timedelta(hours=4)
+datetime.datetime(2021,9,14,14,14,0) + datetime.timedelta(minutes=120)
+datetime.datetime(2021,9,14,14,14,0) + datetime.timedelta(seconds=3600)
+datetime.datetime(2021,9,14,14,14,0) + datetime.timedelta(weeks=1)
+
+# 시간 관련 함수
+import time
+
+time.time() # 1970년 1월 1일 0시 0분 0초를 기준으로 지난 시간을 초단위로 리턴
+
+time.localtime()
+time.localtime().tm_year
+time.localtime().tm_mon
+time.localtime().tm_mday
+time.localtime().tm_hour
+time.localtime().tm_min
+time.localtime().tm_sec
+time.localtime().tm_wday #요일 0~6 :월~일
+time.localtime().tm_yday # 누적일수
+time.localtime().tm_isdst #서머타임일경우1, 아닐경우 0, 몰라 -1
+
+time.gmtime() 
+time.asctime() # .strftime(%c) 와 같네
+time.ctime()
+
+# time -> char
+time.strftime('%Y-%m-%d %H:%M:%S %z',time.localtime()) #포멧을 앞에다가 써야한다 !
+
+# char -> time
+time.strptime('2003-06-07','%Y-%m-%d')
+
+
+for i in range(10):
+    print(i)
+    time.sleep(2)
+
+# calendar : 달력 관련 함수
+
+import calendar 
+calendar.calendar(2021)
+print(calendar.calendar(2022))
+
+# print 하지 않아도 포멧이 맞춰 나옴
+calendar.prcal(2021)
+
+# 특정 달력만 출력하고 싶다
+calendar.prmonth(2021,9)
+
+calendar.weekday(2021,9,14) # 요일 월:0~일:6
+calendar.monthrange(2022,1) # 그 달의 첫번째 날짜 요일 (요일 월:0~일:6), 마지막 일
+
+[문제51] 오늘 한글 요일을 출력해주세요. toweekday() 함수를 생성하세요.
+import time
+
+# 요일을 추출
+time.localtime().tm_wday
+datetime.datetime.now().weekday()
+d.strftime('%A') # 영문요일
+d.strftime('%w') # 0일~6토 
+
+# x요일로 출력하고 싶을 때 
+'월화수목금토일'[time.localtime().tm_wday]+'요일'
+'월화수목금토일'[datetime.datetime.now().weekday()]+'요일'
+'일월화수목금토'[int(d.strftime('%w'))]+'요일'
+
+# 형식매개변수를 넣지 않아도 상관없다
+def toweekday():
+    return '월화수목금토일'[datetime.datetime.now().weekday()]+'요일'
+
+def toweekday():
+    return '월화수목금토일'[time.localtime().tm_wday]+'요일'
+
+def toweekday():
+    days = ['월요일','화요일','수요일','목요일','금요일','토요일','일요일']
+    return days[datetime.datetime.now().weekday()]
+
+toweekday()
+
+[문제52] last_name, 입사한 요일(한글)을 출력해주세요.
+
+import csv
+import datetime
+
+file = open("c:/data/학습용 데이터/employees.csv")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    d= datetime.datetime.strptime(i[5],'%Y-%m-%d') #문자에서는 날짜를 뽑아낼 수 없기 때문에 date로 바꿔야한다
+    print(i[2],'월화수목금토일'[d.weekday()]+'요일')
+
+file.close()
+
+# toweekday 함수를 사용해보자 
+
+def toweekday(arg):
+    return '월화수목금토일'[arg]+'요일'
+
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file) 
+next(emp_csv) 
+
+for i in emp_csv:
+    d = datetime.datetime.strptime(i[5],'%Y-%m-%d')
+    print(i[2],toweekday(d.weekday()))
+
+file.close()
+
+#lambda 사용하자
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv=csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    d= datetime.datetime.strptime(i[5],'%Y-%m-%d')
+    print(i[2],(lambda arg:'월화수목금토일'[arg]+'요일')(d.weekday()))
+
+file.close()
+
+# time.strptime을 사용하자
+
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv=csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    d = time.strptime(i[5],'%Y-%m-%d')
+    print(i[2],(lambda arg:'월화수목금토일'[arg]+'요일')(d.tm_wday))
+
+file.close()
+
+
+[문제53] last_name, 입사한 날짜부터 오늘까지 총 몇일 근무했는지 출력하세요.
+
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    day = (datetime.datetime.now()-datetime.datetime.strptime(i[5],'%Y-%m-%d')).days
+    print(i[2],str(day)+'일 근무함')
+
+혹은
+
+for i in emp_csv:
+    day = datetime.datetime.now()-datetime.datetime.strptime(i[5],'%Y-%m-%d')
+    print(i[2],day.days)
+
+# 오류 발생 :
+    ## time.localtime의 형식이 연산 할 수 없는 형식이다. 
+    ##  time.struct_time(tm_year=2022, tm_mon=1, tm_mday=6, tm_hour=23, tm_min=52, tm_sec=45, tm_wday=3, tm_yday=6, tm_isdst=0)
+time.localtime()-time.strptime('2001-01-13','%Y-%m-%d')
+
+
+
+[문제54] 2001-01-13일에 입사한 사원의 이름과 입사일을 출력하세요.
+
+# char 형으로 바로 추출 
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    if i[5] == '2001-01-13':
+        print(i[2],i[5])
+        
+file.close()
+
+# date 형으로 
+
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    if datetime.datetime.strptime(i[5],'%Y-%m-%d') == datetime.datetime.strptime('2001-01-13','%Y-%m-%d'):
+        print(i[2],i[5])
+
+file.close()
+
+[문제55] 2002년도에 입사한 사원들의 이름과 입사일을 출력하세요
+
+# str
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    if i[5][:4] == '2002':
+        print(i[2],i[5])
+        
+file.close()
+
+# date
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    if datetime.datetime.strptime(i[5],'%Y-%m-%d').year==2002: #'2002'하면 안된다 date로 바꼈으니. 형 변환에 주의
+        print(i[2],i[5])
+file.close()   
+
+# 타입을 확인하면서 해야한다 
+type(datetime.datetime.strptime('2003-06-17','%Y-%m-%d').year)
+type(time.strptime('2003-06-17','%Y-%m-%d').tm_year)
+
+# dateutil **** 사용 많다
+import dateutil
+
+# char -> date
+dateutil.parser.parse('2021-09-14')
+dateutil.parser.parse('2021-09-14').year
+dateutil.parser.parse('2021-09-14').day
+
+file=open("c:/data/학습용 데이터/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    if dateutil.parser.parse(i[5]).year == 2002: #parser을 하면 굳이 format '%Y-%m-%d' 안해도 됨 하면 되려 오류난다.
+        print(i[2],i[5])
+file.close()    
+
+
+datetime.datetime(2021,9,14) + datetime.timedelta(days=77)
+
+#만약에 3개월을 더하고 싶은데 3개월의 정확한 일수를 우리가 아나?
+## 이걸 dateutil의 relativedelta.relativedelta로 해결 가능
+
+dateutil.relativedelta.relativedelta(months=3)
+
+# date + 년수 = date 
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(years=3)
+# date - 년수 = date 
+datetime.datetime(2021,9,14) - dateutil.relativedelta.relativedelta(years=3)
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(years=-3)
+
+# date + 달수 = date
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(months=3)
+# date - 달수 = date
+datetime.datetime(2021,9,14) - dateutil.relativedelta.relativedelta(months=3)
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(months=-3)
+
+# date + 주 = date
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(weeks=6)
+
+# date + 일수 = date
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(days=60)
+
+# date + 시간 = date
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(hours=6)
+
+# date + 분 = date
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(minutes=60)
+
+# date + 초 = date
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(seconds=60)
+
+
+# if 10년 3개월을 더하고 싶을 때?
+datetime.datetime(2021,9,14) + dateutil.relativedelta.relativedelta(years=10,months=3)
+
+
+## 코드를 간단하게 하고싶어서 약칭으로 바꿀 수 있을까?
+
+### 원래는 이렇게하는데
+import dateutil 
+dateutil.parser.parse('2021-09-14')
+
+### 불러올때 이렇게 
+### 근데 메모리를 위해서는 웬만해서 계속 호출하는게 낫다 이건 따로 저장해야 하니까
+### 어느 모듈인지 못 찾을 때가 있을 것 같아서 그냥 같이 하는게 나을듯 ^^,,, 
+from dateutil.parser import parse #이런 식으로 해서 
+parse('2021-09-14')
+
+from dateutil.relativedelta import relativedelta
+datetime.datetime.now()+relativedelta(weeks=1)

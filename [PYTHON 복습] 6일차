@@ -1,0 +1,598 @@
+
+
+[문제57] 년도별 급여의 총액을 구하세요
+
+해설
+
+import csv
+import datetime
+import time
+import dateutil
+
+
+file = open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+1.타입을 생각해서 어느 코드를 쓸지 먼저 생각하기. 
+
+# '2003-06-17' # 문자형-> date형 변환
+datetime.datetime.strptime('2003-06-17','%Y-%m-%d').year
+
+time.strptime('2003-06-17','%Y-%m-%d').tm_year
+
+dateutil.parser.parse('2003-06-17').year #규칙이 정해져있음 (연월달)
+dateutil.parser.parse('2003/06/17').year
+dateutil.parser.parse('20030617').year
+
+2.  연도를 뽑은 후, sum(salary) 출력
+
+# dict 형식으로 생성 
+year_sum={}
+
+key value 
+2001 1000
+2002 2000
+2003 3000
+
+file=open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    years = (dateutil.parser.parse(i[5]).year)
+    if years in year_sum.keys():
+        year_sum[years] = year_sum[years]+int(i[7]) #key가 있으면 기존에 있던 years의 value에 새로운 salary값을 추가.
+    else:
+        year_sum[years] = int(i[7]) #key에 year값이 존재하지 않으면 등록하고, value(salary) 값을 넣기. 
+        
+file.close()
+
+
+3. key 혹은 value 기준으로 해서 정렬
+sorted(year_sum.items()) #기본값은 key기준
+sorted(year_sum.items(),reverse=True)
+
+#급여 기준으로 정렬
+from operator import itemgetter
+
+sorted(year_sum.items(),reverse=True,key=itemgetter(1))
+
+
+# 리스트 틀에서 벗어나기 
+year_sum_sorted = sorted(year_sum.items(),reverse=False)
+
+for i in year_sum_sorted:
+    print(i[0],i[1])
+
+
+# 결과를 csv로 저장
+
+## writerow : for문을 사용해 조건을 걸어 출력할 때 쓰면 좋음.
+file = open("c:/data/year_sum_sorted.csv","w",newline='')
+q = csv.writer(file)
+
+for i in year_sum_sorted:
+    ## q.writerow([i[0],i[1]]) 한줄씩 write 한다.
+    q.writerow(i) ## 한꺼번에 불러오기
+    
+file.close()
+
+## writerows : 조건을 걸지 않고 한꺼번에 write 하고싶을 때(편리성 높음)
+file = open("c:/data/year_sum_sorted.csv","w",newline='')
+q = csv.writer(file)
+q.writerows(year_sum_sorted)
+file.close()
+
+
+[문제58] 요일별 급여의 총액을 구하세요
+
+import csv
+import datetime
+
+week_sum = {}
+
+file = open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    week = datetime.datetime.strptime(i[5],'%Y-%m-%d').weekday()
+    if week in week_sum.keys():
+        week_sum[week] = week_sum[week]+int(i[7])
+    else:
+        week_sum[week] = int(i[7])
+
+file.close()
+
+week_sum
+
+## 요일명으로 출력하기
+from operator import itemgetter
+week_sum_sorted = sorted(week_sum.items(),reverse=False)
+
+week_sum_sorted
+
+days = ['월','화','수','목','금','토','일']
+
+for i in week_sum_sorted:
+    print(days[i[0]],i[1])
+
+## 결과값 저장하기 
+file = open("c:/data/week_sum_sorted.csv","w",newline='') #기본값은 \n이라서 공백문장이 생김
+q = csv.writer(file)
+
+for i in week_sum_sorted:
+    q.writerow([days[i[0]],i[1]])
+
+file.close()
+
+# sorted 진행 시 list 형태로 변경되기 때문에 dict형으로 다시 한번 바꾸기.
+week_sum_sorted = dict(week_sum_sorted)
+week_sum_sorted 
+
+
+[문제59] 요일별 입사자의 빈도수 구하세요.
+
+## 해답1
+import csv
+import datetime
+week_sum={}
+
+file=open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+for i in emp_csv:
+    week = datetime.datetime.strptime(i[5],'%Y-%m-%d').weekday()
+    if week in week_sum.keys():
+        week_sum[week]=week_sum[week] + 1
+    else:
+        week_sum[week] = 1
+file.close()
+
+week_sum
+
+
+## 해답 2 : collections
+
+file=open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+week = [datetime.datetime.strptime(i[5],'%Y-%m-%d').weekday() for i in emp_csv]
+
+file.close()
+
+week
+
+import collections
+
+week_cnt = collections.Counter(week) #dict 형태로 출력 
+week_cnt_sorted = sorted(week_cnt.items())
+
+days = ['월','화','수','목','금','토','일']
+
+for i in week_cnt_sorted:
+    print(days[i[0]],i[1])
+
+file = open("c:/data/week_cnt_sorted.csv","w",newline='')
+q = csv.writer(file)
+
+for i in week_cnt_sorted:
+    q.writerow([days[i[0]],i[1]])
+    #q.writerow(i)
+    
+file.close()
+
+
+■ pickle
+- 변수형태를 그대로 유지해서 파일에 저장시키고 붏러올수있는 모듈이다
+- 바이너리 형태로 저장 (그 모듈에서 생성했으면, 그 모듈에서만 불러들어야지 인식이 가능함)
+- # 모듈이 아닌 일반 메모장에서 여는 경우 다 깨져서 보인다
+
+days = ['월','화','수','목','금','토','일']
+type(days)
+
+import pickle # 변수의 형태를 그대로 유지해서 저장! 
+
+file = open("c:/data/days.txt",'wb') #wb 
+pickle.dump(days,file) #바이너리 형식이라서 안에 내용물은 보이지 않거나, 인식이 어려움
+file.close()
+
+# 읽어들이기
+file = open("c:/data/days.txt",'rb') #rb 
+new_days = pickle.load(file)
+file.close()
+
+new_days
+
+# dic 형태 저장
+week_cnt_dict = dict(week_cnt_sorted)
+type(week_cnt_dict)
+
+file = open("c:/data/week_cnt_dict.txt",'wb') #wb 
+pickle.dump(week_cnt_dict,file)
+file.close()
+
+# 읽어들이기
+file = open("c:/data/week_cnt_dict.txt",'rb') #rb 
+new_week = pickle.load(file)
+file.close()
+
+new_week
+
+[문제60] 월별 입사자 빈도수 구하세요.
+
+# 해
+
+import datetime
+from operator import itemgetter
+import csv
+
+file = open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+month_cnt = {}
+
+for i in emp_csv:
+    m = datetime.datetime.strptime(i[5],'%Y-%m-%d').month
+    if m in month_cnt.keys():
+        month_cnt[m] += 1
+    else:
+        month_cnt[m] = 1
+        
+file.close()
+
+month_cnt
+
+## 정렬하기
+month_cnt_sorted = sorted(month_cnt.items(),reverse=False, key = itemgetter(0))
+for i in month_cnt_sorted:
+    print(i[0],i[1])
+        
+# 1~12를 1~12월로 바꿔보자 (형태는 list안에 tuple임)
+dict([(str(i[0])+'월',i[1]) for i in month_cnt_sorted])
+
+# dict 형태에서 key값을 수정하고 싶을 때 
+## k,v =key and values
+month_cnt_dict = dict(month_cnt_sorted)
+month_cnt_dict = {str(k)+'월': v for k,v in month_cnt_dict.items()}
+month_cnt_dict 
+
+# month_cnt_dict를 csv로 저장해보자
+file = open("c:/data/month_cnt_dict.csv","w",newline = '')
+month_write = csv.writer(file)
+
+for k,v in month_cnt_dict.items():
+    month_write.writerow([k,v])
+file.close()
+
+# month_cnt_dict 읽어보자
+file = open("c:/data/month_cnt_dict.csv","r")
+month_new = csv.reader(file)
+type(month_new)
+
+for i in month_new:
+    print(i[0],i[1]) #한번 패치가 된 것은 다시 했을 때 안돌아간다
+    
+file.close()
+
+# 변수로(month_cnt_dict)로 불러오고 싶을 때
+import pickle
+
+# 저장 
+file = open("c:/data/month_cnt.txt",'wb')
+pickle.dump(month_cnt_dict,file)
+file.close()
+
+# 읽어들이기  
+file = open("c:/data/month_cnt.txt",'rb')
+month_cnt_new = pickle.load(file)
+file.close()
+
+month_cnt_new
+
+# 빈도수 체크 시 collections.Counter을 더 많이 사용한다 
+## 위에서 배운거는 수동으로 만드는 방법
+
+import csv
+file = open("c:/data/employees.csv","r")
+emp_csv = csv.reader(file)
+next(emp_csv)
+
+month = [datetime.datetime.strptime(i[5],'%Y-%m-%d').month for i in emp_csv]
+month
+file.close()
+
+import collections
+month_cnt = collections.Counter(month)
+month_cnt_sorted = sorted(month_cnt.items())
+
+month_cnt_sorted
+
+''' 
+file로 떨어트리는거 기억하기 
+읽어들이는 작업
+변수모양 그대로 write 시키는 방법 pickle dump
+등등 주의하면 될 듯 싶다. (공부 더 하기 이해가 잘 안됨)
+'''
+
+■ pandas 
+- 데이터분석 기능을 제공하는 라이브러리
+- 1차원배열 : Series #R의 vector
+- 2차원배열 : DataFrame #R과 같다
+
+1. Series 
+- 1차원 배열 
+- 인덱스(색인) 배열의 데이터에 연관된 이름을 가지고 있다
+- R의 Vector 자료형하고 비슷하다
+    - 같은 형의 데이터만 수용 가능하다
+
+from pandas import Series,DataFrame #대소문자 구분
+
+s1 = Series([10,20,30,40,50])
+s1
+type(s1)
+s1.astype #값과 타입 확인 가능 
+s1.dtype #타입만
+
+s1=Series(['10',20,30,40,50])
+s1
+type(s1)
+s1.astype # object : 우선순위가 높은 문자형(character)으로 자동 변환 
+
+s1.astype('int32') # 타입변경, 미리보기
+s1.astype('int64')
+s1 = s1.astype('int64') #적용
+s1 = s1.astype('object')
+
+s1.index
+s1.values
+
+s1.index=['a','b','c','d','e'] #인덱스 수정
+s1
+
+# list에 각각 10을 더하고 싶다
+lst = [1,2,3]
+lst + 10 #리스트 제약. 개별로 돌려야 한다
+lst[0] + 10
+lst[1] + 10
+lst[2] + 10
+
+for i in lst:
+    print(i + 10)
+    
+[i + 10 for i in lst]
+
+# Serise는 R의 벡터처럼 더할 수 있다
+s1 + 10
+s1 - 100
+s1 * 10
+s1 ** 2
+s1 / 2
+s1 % 2
+
+s1['a']
+s1['b']
+s1[['a','b']] #두개이상 뽑을때는 대괄호*2
+
+s1[0]
+s1[1]
+s1[0:3]
+s1[-1]
+
+s1[s1>30] #조건에 True인 것만 추출 
+
+'a' in s1 # index 이름으로 찾기
+'f' in s1
+
+s1['a'] = 100 # 수정
+s1['f']=500 #새로운 값을 추가
+
+del s1['f'] # 요소 삭제 
+s1
+
+
+# 빈문자열/None 변경시 -> object로 형변환
+s1['a']=''
+s1['a']=None 
+s1
+
+#object 바꿔서 사칙연산 실행 안됨 
+## None 일때는 object지만 사칙연산이 실행은 됨
+s1 + 100
+s1 *2
+
+del s1
+
+# Series 형으로 변환 가능 
+lst = [10,20,30]
+Series(lst) 
+
+t = (10,20,30)
+Series(t) 
+
+d= {'a':10,'b':20,'c':30} 
+Series(d) # key = index가 됨
+
+ix = {'a','b'} #set 
+Seires(ix)
+type(ix)
+
+Series(d,index=ix) #이렇게 해서 부분 추출 가능하다
+Series(d,index={'a','b'})
+s1=Series(d,index={'b','c','f'}) # NaN (Not a Number) 인덱스 값을 찾을 수가 없을 경우 NaN으로 저장된다.
+s1 # f에 언젠가는 실수도 들어갈 수 있기 때문에 float type으로 변경
+
+# 별칭 만들어서 사용 (pandas.isnull 너무 귀찮아)
+import pandas as pd
+dir(pd)
+del(pd)
+
+pd.isnull(s1) #NaN 체크
+s1[pd.isnull(s1)] #NaN인 것만 뽑아내자 
+
+pd.notnull(s1)
+s1[pd.notnull(s1)]
+
+d= {'a':10,'b':20,'c':30} 
+s2 = Series(d)
+s2
+
+s2['a']=''
+s2.astype
+s2.dtype
+
+'''빈문자열 주의'''
+pd.isnull(s2) # NaN이 없으니 나오지 않음 
+s2 == '' #빈 문자열은 그래서 꼭 이렇게 찾기
+s2[s2 == '']
+
+#None 으로 변경
+s2[s2==''] = None 
+s2
+pd.isnull(s2) # None은 Nan값으로 인식한다 
+
+None == NaN == NA
+None = 기본
+NaN = numpy / np.NaN
+
+'''numpy'''
+
+import numpy as np
+
+s2['b'] = np.NaN
+s2
+s2[pd.isnull(s2)]
+s2[pd.notnull(s2)]
+
+2.DataFrame
+
+- 2차원 배열.
+- 데이터 베이스의 테이블과 비슷하다.
+- 각 컬럼은 서로 다른 종류값을 가진다.
+- R언어의 data.frame과 같다.
+
+df1=DataFrame([[1,2,3],[4,5,6],[7,8,9]])
+df1
+type(df1)
+
+data = {'도시':['서울','부산','강원','인천'],
+        '인구수':[500,400,200,300]}
+df2 = DataFrame(data)
+df2
+
+df2.columns
+df2.index
+df2.values
+
+df2.columns = ['지역','가구수'] #컬럼이름수정
+df2
+
+# 열 추출, 이때는 '' 필요없음 
+df2.지역
+df2.가구수
+df2.가구수*100
+
+df2['지역'] #인덱싱 통해서 할때는 문자형으로 표현
+type(df2['가구수']) # R에서도 df에서 뽑아낼때 vector 된 것 마냥 serise로 추출됨
+df2['가구수']*100 # Series로 추출되어 사칙연산 가능함 
+
+df2.index = ['one','two','three','four'] #index 수정하는 방법 
+df2
+
+df2['one'] # 이렇게는 행 추출 안된다
+
+# .loc(이름기반) / .iloc(위치기반) 행 추출 
+df2.loc['one'] # 인덱스 이름 이용
+df2.loc['two']
+df2.loc[0] # 오류
+
+df2.iloc[0] # 인덱스 위치를 이용
+df2.iloc[3] 
+df2.iloc['one'] # iloc는 이름을 사용할 수 없다 
+
+# df2.ix['one'] 3.8버전에서는 오류
+
+df2['부채'] = [100,20,40,10] #새로운 열 추가
+df2
+
+del df2['부채'] #열삭제
+df2
+
+[문제 61] 아래와 같은 모양의 표를 생성하세요 
+
+      PYTHON   R  SQL
+2014      60  90   50
+2015      80  65   75
+2016      70  75   85
+
+
+# dic 형태
+data = {'PYTHON':[60,80,70],
+        'R':[90,65,75],
+        'SQL':[50,75,85]
+        }
+
+df3 = DataFrame(data)
+df3.index = ['2014','2015','2016']
+df3    
+
+# DataFrame 형태
+df=DataFrame({'PYTHON':[60,70,80],'R':[90,65,75],'SQL':[50,75,85]},
+               index=[2014,2015,2016])
+df
+
+df.PYTHON
+df['PYTHON']
+df.loc[:,'PYTHON'] # [행,열] loc,iloc는 열 제한도 가능
+df.iloc[:,0]
+df.iloc[:,1]
+
+df[:]
+df[0:1] # 1~2 index 까지의 행 값을 추출 
+df.iloc[0]
+df.loc[2014]
+
+df.iloc[0,0] # 위치기반 :행 위치, 열 위치
+df.loc[2014,'PYTHON'] #이름기반 : 행이름,열이름
+
+# 조건을 걸어서 출력 가능
+df[df['PYTHON']>60] # select * from df where python > 60 
+
+# select python from df where python >60
+df[df['PYTHON']>60]['PYTHON']
+df.loc[df['PYTHON']>60 ,'PYTHON'] # 이름기반
+df['PYTHON'][df['PYTHON']>60] # 앞에 희망출럭, 뒤에 조건
+# df.iloc[df['PYTHON']>60,0] 오류발생 위치기반으로만 수행 해야하기 때문에
+
+# pd.read_csv : csv file을 pandas로 읽어들이기~
+import csv
+import pandas as pd
+
+emp = pd.read_csv("c:/data/employees.csv")
+emp.info() #어떤 열로 이루어져있는가?
+ 
+emp[emp['EMPLOYEE_ID']==100] # 이 조건에 해당하는 행 추출
+emp.loc[emp['EMPLOYEE_ID']==100,]
+
+emp[emp['EMPLOYEE_ID']==100][['LAST_NAME','SALARY']] #두개 이상일 시 중첩 리스트
+emp.loc[emp['EMPLOYEE_ID']==100,['LAST_NAME','SALARY']]
+emp[['LAST_NAME','SALARY']][emp['EMPLOYEE_ID']==100]
+
+
+[문제62] JOB_ID가 ST_CLERK인 사원의 LAST_NAME, SALARY를 출력해주세요.
+해답:
+emp[emp['JOB_ID']=='ST_CLERK'][['LAST_NAME','SALARY']]
+emp.loc[emp['JOB_ID']=='ST_CLERK',['LAST_NAME','SALARY']]
+emp[['LAST_NAME','SALARY']][emp['JOB_ID']=='ST_CLERK']
+
+[문제63] SALARY가 10000이상인 사원들의 LAST_NAME,SALAYR,HIRE_DATE를 출력해주세요.
+해답:
+emp[emp['SALARY']>=10000][['LAST_NAME','SALARY','HIRE_DATE']]
+emp.loc[emp['SALARY']>10000,['LAST_NAME','SALARY','HIRE_DATE']]
+emp[['LAST_NAME','SALARY','HIRE_DATE']][emp['SALARY']>=10000]
+
+

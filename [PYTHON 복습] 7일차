@@ -1,0 +1,494 @@
+
+from pandas import Series, DataFrame
+import pandas as pd
+dir(pd)
+
+s1 = Series([10,20,30,40],index=['c','d','a','b'])
+s1
+
+# reindex : 새로운 색인에 맞도록 객체를 새로 생성하는 기능 
+obj = s1.reindex(['a','b','c','d']) #미리보기
+obj
+
+obj2 = s1.reindex (['a','b','c','d','e']) #NaN으로 저장(float으로 저장)
+obj2
+
+obj3 = s1.reindex(['a','b','c']) # 필요한 것만 추출 가능
+obj3
+
+obj4 = s1.reindex(['a','b','c','d','e'],fill_value=0) # NaN값 채우기 가능
+obj4
+
+
+import numpy as np
+
+# 둘은 다릅니다
+list(range(4)) 
+
+x= np.arange(4) #1차원 배열
+x.shape
+x= x.reshape(2,2) #차원 변경, 미리보기
+x.shape
+
+df = DataFrame(np.arange(9).reshape(3,3),
+          index=['a','b','c'],
+          columns=['x','y','z'])
+
+df
+df.info()
+
+# ffill/bfill
+# 내부적으로 sort가 돌아간다. 
+df = DataFrame(np.arange(9).reshape(3,3),
+          index=['a','b','d'],
+          columns=['x','y','z'])
+
+df.reindex(['a','c','d','b'],method='ffill')
+df.reindex(['a','c','d','z'],method='ffill')
+
+df.reindex(['a','c','d','b'],method='bfill')
+df.reindex(['a','c','d','z'],method='bfill')
+
+
+df1 = df.reindex(['c','a']) # 필요한 인덱스 행들만 추출 가능 
+df1
+
+df2 = df.reindex(['a','b','c','d'])
+df2
+
+df3 = df.reindex(['a','b','c','d'],fill_value=0)
+df3
+
+# method = 'ffill' 또는 'pad'는 NaN값을 앞의 값으로 채운다  
+df4 = df.reindex(['a','b','c','d'],method='ffill')
+df4
+
+df4 = df.reindex(['a','b','c','d'],method='pad')
+df4
+
+
+df = DataFrame(np.arange(9).reshape(3,3),
+          index=['a','c','d'],
+          columns=['x','y','z'])
+
+df5 = df.reindex(['a','b','c','d'],method='ffill')
+df5
+
+# method = 'bfill' 또는 'backfill'은 NAN값을 뒤의 값으로 채운다
+df6 = df.reindex(['a','b','c','d'],method='bfill')
+df6
+
+df7 = df.reindex(['a','b','c','d'],method='backfill')
+df7
+
+
+obj = Series(['SQL','R','PYTHON'],index=[0,2,4])
+obj
+obj.reindex(range(6),fill_value='ML')
+obj.reindex(range(6),method='ffill')
+obj.reindex(range(6),method='pad')
+obj.reindex(range(6),method='bfill') # 뒤에 값이 없어서 NaN
+obj.reindex(range(6),method='backfill')
+
+
+■ .sort_index : 정렬
+
+obj = Series([2,7,3,8],index=['d','a','c','b'])
+obj
+
+obj.reindex(['a','b','c','d']) 
+
+obj1 = obj.sort_index()
+obj1 = obj.sort_index(ascending=True) # 인덱스 기준으로 오름차순 정렬
+obj2 = obj.sort_index(ascending=False) # 내림차순 정렬
+
+obj3 = obj.sort_values()
+obj3 = obj.sort_values(ascending=True) # 값 기준으로 오름차순 정렬
+obj4 = obj.sort_values(ascending=False) # 값 기준으로 내림차순 정렬
+
+
+df = DataFrame(np.arange(8).reshape(2,4),
+          index=['two','one'],
+          columns=['d','a','c','d'])
+df.reindex(['one','two'])
+
+df.sort_index()
+df.sort_index(ascending=True) # 인덱스 기준으로 오름차순
+df.sort_index(ascending=False) # 인덱스 기준으로 내림차순
+
+df.sort_index(axis=0) # axis=0 행 기준 
+df.sort_index(axis=0,ascending=True) # 인덱스 기준으로 오름차순
+df.sort_index(axis=0,ascending=False) # 인덱스 기준으로 내림차순
+
+df.sort_index(axis=1) # axis=1 컬럼 기준 정렬
+df.sort_index(axis=1,ascending=True)# 컬럼 기준 오름
+df.sort_index(axis=1,ascending=False) # 컬럼 기준 내림 
+
+df.sort_values(by='a') #a 열 기준으로 정렬
+df.sort_values(by='a',ascending=True,axis=0)
+df.sort_values(by='a',ascending=False,axis=0) 
+
+df.sort_values(by='one',ascending=True,axis=1) 
+df.sort_values(by='one',ascending=False,axis=1) 
+
+df.sort_values(by='two',ascending=True,axis=1)
+df.sort_values(by='two',ascending=False,axis=1) 
+
+
+---------------------------------------------------------------------------
+[문제64] salary 10000 이상인 사원들의 last_name,salary, department_id 를 출력하세요. 
+         department_id를 기준으로 오름차순 정렬하세요.
+
+import csv
+import pandas as pd
+from pandas import Series, DataFrame
+
+emp = pd.read_csv("c:/data/employees.csv")
+emp.info()
+
+# 방법 1
+x = emp.loc[emp['SALARY']>=10000,['LAST_NAME','SALARY','DEPARTMENT_ID']]
+x.sort_values(by='DEPARTMENT_ID',ascending=True,axis=0)
+
+# 방법2 
+x = emp[['LAST_NAME','SALARY','DEPARTMENT_ID']][emp['SALARY']>=10000]
+x['DEPARTMENT_ID'] = x['DEPARTMENT_ID'].astype('int64')
+result = x.sort_values(by='DEPARTMENT_ID',ascending = True, axis=0)
+result
+
+# index 정렬 
+result.reset_index() # 인덱스를 재설정, 기존인덱스는 열로 추가된다
+result.reset_index(drop=True) # 인덱스를 재설정, 기존인덱스는 제거된다.
+result
+
+
+# 두가지 행을 지정 시, 각각 asc,desc 지정이 가능하다. 
+x.sort_values(by=['DEPARTMENT_ID','SALARY'],ascending=[True,True],axis=0)
+x.sort_values(by=['DEPARTMENT_ID','SALARY'],ascending=[True,False],axis=0)
+
+
+
+# 열 단위 생성 : 딕셔너리 
+df = DataFrame({'영어':[60,50,90],
+           '수학':[80,70,80],
+           '국어':[70,85,95]},
+          index = ['홍길동','박찬호','손흥민'])
+df
+# 행 단위 생성 : 중첩 리스트
+df = DataFrame([[60,80,70], [50,70,85],[90,80,95]],
+          index = ['홍길동','박찬호','손흥민'],
+          columns=['영어','수학','국어'])
+df
+
+#위치기반 
+df.iloc[0,0]
+df.iloc[0,1]
+df.iat[0,0] # new
+
+#이름기반 new
+df.loc['홍길동','영어']
+df.at['홍길동','영어'] # new
+
+# 새로운 행 추가/수정
+df.loc['제임스','영어'] = 100 # 행 추가
+df.at['제임스','수학'] = 85 # new
+df.iloc[3,2] = 70
+df.iat[3,2] = 70
+df
+df.loc['제임스',['영어','수학','국어']] = [100,20,40]
+
+# 모든 데이터 형식 바꾸기 
+df.info()
+df = df.astype('int64')
+df = df.astype('float')
+
+# 개별컬럼 형식 바꾸기 
+df['영어'] = df['영어'].astype('int')
+df.info()
+
+# 컬럼을 추가 
+df['과학'] = [50,70,90,80]
+df['한국사'] = 100 # 동일한 값으로 추가가 된다
+df['미술']=np.nan
+df
+
+# 특정한 필드값을 수정
+df.loc['홍길동','미술']=100
+df.at['박찬호','미술']=90
+df.iloc[2,5]=80
+df.iat[3,5]=90
+df
+ 
+# 열 삭제
+del df['미술'] # 바로적용
+df=df.drop('한국사',axis=1) # 미리보기 
+
+# 행 삭제
+df = df.drop('제임스',axis=0)
+
+# 특정한 인덱스 이름 수정 {이전값:새로운값}
+df = df.rename(index={'홍길동':'제임스'})
+
+# 특정한 컬럼 이름 수정
+df = df.rename(columns={'수학':'산수'})
+df
+
+# 인덱스를 컬럼으로 이동하고 인덱스는 재설정 
+df = df.reset_index()
+df
+
+# 컬럼 이름 수정 
+df = df.rename(columns={'index':'이름'})
+df
+
+# 컬럼을 인덱스로 이동
+df.set_index('이름')
+df
+
+# index.name 
+df.index.name = '반가워' #빈 문자열로 수정
+df
+df.index.name = None #이름 삭제 
+df
+
+
+df1 = DataFrame({'영어':[60,50,90],
+           '수학':[80,70,80],
+           '국어':[70,85,95]},
+          index = ['홍길동','박찬호','손흥민'])
+
+df2 = DataFrame({'과학':[64,59,92],
+           '수학':[81,75,89],
+           '국어':[78,85,97]},
+          index = ['박커리','이하든','햔빈'])
+
+df1
+df2
+# 서로 다른 데이터 프레임을 합쳐보자
+## 열 이름이 다를 때는 NaN값이 추가가 되어 합쳐진다 
+student = df1.append(df2)
+
+df1.append(df2,ignore_index=False) #기본값,
+
+'''
+만약 index가 없는 두 df를 병합한다고 가정했을 때,
+ignore_index = False로 하면 기존의 인덱스를 유지한다.
+
+     영어  수학  국어    과학
+0  60.0  80  70   NaN
+1  50.0  70  85   NaN
+2  90.0  80  95   NaN
+0   NaN  81  78  64.0
+1   NaN  75  85  59.0
+2   NaN  89  97  92.0
+
+ignore_index = Ture 했을 때 : index를 새로 생성해 sequence하게 차례대로 index를 생성한다.
+
+0  60.0  80  70   NaN
+1  50.0  70  85   NaN
+2  90.0  80  95   NaN
+3   NaN  81  78  64.0
+4   NaN  75  85  59.0
+5   NaN  89  97  92.0
+
+df1 = DataFrame({'영어':[60,50,90],
+           '수학':[80,70,80],
+           '국어':[70,85,95]})
+
+
+df2 = DataFrame({'과학':[64,59,92],
+           '수학':[81,75,89],
+           '국어':[78,85,97]})
+
+'''
+
+pd.concat([df1,df2],ignore_index=True,axis=0) # 기본값 
+pd.concat([df1,df2],ignore_index=True,axis=1) 
+pd.concat([df1,df2],ignore_index=False,axis=1) 
+
+
+student['국어']==70 or student['국어']==85
+True or False 
+
+(student['국어'] == 70) or (student['국어'] == 85) # 오류 발생 
+(student['국어'] == 70) | (student['국어'] == 85) # 이건 됨 
+
+# isin 연산자 의미
+(student['국어'] == 70) | (student['국어'] == 85) 
+==
+student['국어'].isin([70,85])
+
+# notin 연산자 의미 (~:not의 의미)
+~((student['국어'] == 70) | (student['국어'] == 85))
+==
+~student['국어'].isin([70,85])
+
+------------------------------------------------------------------------------------
+[문제65] job_id가 AD_VP, AD_PRES 인 사원들의 last_name, salary, job_id 출력하세요.
+
+# 답1 : 기본형
+emp[emp['JOB_ID'].isin(['AD_VP','AD_PRES'])][['LAST_NAME','SALARY','JOB_ID']]
+# 답2 : 기본형 2
+emp[['LAST_NAME','SALARY','JOB_ID']][emp['JOB_ID'].isin(['AD_VP','AD_PRES'])]
+# 답3 : loc
+emp.loc[emp['JOB_ID'].isin(['AD_VP','AD_PRES']),['LAST_NAME','SALARY','JOB_ID']]
+# 답4 : isin 대신 | 사용
+emp[(emp['JOB_ID']=='AD_VP')|(emp['JOB_ID']=='AD_PRES')][['LAST_NAME','SALARY','JOB_ID']]
+
+
+[문제66] job_id가 AD_VP, AD_PRES 아닌 사원들의 last_name, salary, job_id 출력하세요.
+# 답1 : 기본형
+emp[~emp['JOB_ID'].isin(['AD_VP','AD_PRES'])][['LAST_NAME','SALARY','JOB_ID']]
+# 답2 : 기본형 2
+emp[['LAST_NAME','SALARY','JOB_ID']][~emp['JOB_ID'].isin(['AD_VP','AD_PRES'])]
+# 답3 : loc
+emp.loc[~emp['JOB_ID'].isin(['AD_VP','AD_PRES']),['LAST_NAME','SALARY','JOB_ID']]
+# 답4 : isin 대신 | 사용
+emp[~((emp['JOB_ID']=='AD_VP')|(emp['JOB_ID']=='AD_PRES'))][['LAST_NAME','SALARY','JOB_ID']]
+
+------------------------------------------------------------------------------------------
+# 행과 열을 제한해서 display하는 기능 
+
+pd.options.display.max_rows = 100
+pd.get_option("display.max_rows")
+# Out[71]: 60개의 행만 출력하겠다 
+
+# 행을 다 보고싶어
+pd.set_option("display.max_rows",1000)
+
+# 열을 다 보고싶다
+pd.get_option("display.max_columns")
+pd.set_option("display.max_columns",20)
+
+# 초기값으로 돌아가자
+pd.reset_option("display.max_columns")
+pd.reset_option("display.max_columns")
+
+------------------------------------------------------------------------------------------
+
+# numpy를 이용해서 null값 체크 
+
+■ SQL : null , R = NA, PYTHON = NaN,None
+
+import numpy as np
+from numpy import nan as NA
+
+obj1 = Series([1,2,3,None,5])
+obj2 = Series([1,2,3,np.NaN,5])
+obj3 = Series([1,2,3,np.nan,5])
+obj4 = Series([1,2,3,NA,5]) #별칭 지정해서 사용 가능 
+
+# NaN 체크
+obj1.isnull()
+obj2.isnull()
+obj3.isnull()
+obj4.isnull()
+
+obj1.notnull()
+obj2.notnull()
+obj3.notnull()
+obj4.notnull()
+
+obj1[obj1.isnull()]
+obj1[obj1.notnull()]
+
+import pandas as pd
+
+pd.isnull(obj1)
+pd.notnull(obj1)
+
+obj1[pd.isnull(obj1)]
+obj1[pd.notnull(obj1)]
+
+# fillna : NaN을 채우는 방법(미리보기)
+obj1 = obj1.fillna(0)
+obj1
+
+# NaN값이 있는 행 삭제 (미리보기)
+obj2 = obj2.dropna()
+obj2
+
+
+df = DataFrame([[1,2,3],[1,None,np.NaN],[np.nan,NA,NA],[NA,2,3]])
+
+df.fillna(0) # 동일한 값으로 채우기
+df[0].fillna(0) # 특정한 열의 NaN을 채우기
+df.fillna({0:0,1:10,2:20}) # 서로다른 열마다 채우고 싶은 값을 지정 
+
+df.dropna()
+df.dropna(how='any',axis=0) # 행기준, NaN이 하나라도 있으면 그 행은 삭제 (미리보기)
+df.dropna(how='all',axis=0) # 행기준 , NaN이 전부 있는 경우면 그 행은 삭제 (미리보기)
+
+df[2] = NA
+df
+df.dropna(how='any',axis=1) # 열기준 
+df.dropna(how='all',axis=1) # 열기준
+
+
+df = DataFrame([[1,2,3],[None,np.NaN,3],[2,3,NA],[2,NA,3]])
+df
+
+df.fillna(0)
+df.fillna(method='ffill')
+df.fillna(method='pad')
+
+df.fillna(method='bfill')
+df.fillna(method='backfill')
+
+[문제67] 커미션이 null인 사원의 last_name, salary를 출력해주세요.
+
+# 답1
+emp[emp['COMMISSION_PCT'].isnull()][['LAST_NAME','SALARY','COMMISSION_PCT']]
+# 답2
+emp[['LAST_NAME','SALARY','COMMISSION_PCT']][emp['COMMISSION_PCT'].isnull()]
+# 답3
+emp.loc[emp['COMMISSION_PCT'].isnull(),['LAST_NAME','SALARY','COMMISSION_PCT']]
+
+
+[문제68] 커미션이 null이 아닌 사원의 last_name, salary, commission_pct 를 출력해주세요
+
+# 답1
+emp[emp['COMMISSION_PCT'].notnull()][['LAST_NAME','SALARY','COMMISSION_PCT']]
+# 답2
+emp[['LAST_NAME','SALARY','COMMISSION_PCT']][emp['COMMISSION_PCT'].notnull()]
+# 답3
+emp.loc[emp['COMMISSION_PCT'].notnull(),['LAST_NAME','SALARY','COMMISSION_PCT']]
+
+
+[문제69] 20번 부서 사원들 또는 급여가 10000이상인 사원의 LAST_NAME, SALARY,JOB_ID를 출력해주세요.
+# 답1
+emp[(emp['DEPARTMENT_ID']==20) | (emp['SALARY'] >= 10000)][['LAST_NAME','SALARY','JOB_ID']]
+# 답2
+emp.loc[(emp['DEPARTMENT_ID']==20) | (emp['SALARY'] >= 10000),['LAST_NAME','SALARY','JOB_ID']]
+
+
+[문제70] 20번 부서 사원들 중에 급여가 10000이상인 사원의 LAST_NAME, SALARY,JOB_ID를 출력해주세요.
+
+# 답1
+emp[(emp['DEPARTMENT_ID']==20) & (emp['SALARY'] >= 10000)][['LAST_NAME','SALARY','JOB_ID']]
+# 답2
+emp.loc[(emp['DEPARTMENT_ID']==20) & (emp['SALARY'] >= 10000),['LAST_NAME','SALARY','JOB_ID']]
+
+[문제71]부서번호가 20번,30번 사원들 중에 급여가 10000이상인 사원의 last_name, salary, department_id를 출력하세요.
+
+# 답1
+emp[emp['DEPARTMENT_ID'].isin([20,30])&(emp['SALARY']>=10000)][['LAST_NAME','SALARY','DEPARTMENT_ID']]
+# 답2
+emp.loc[emp['DEPARTMENT_ID'].isin([20,30])&(emp['SALARY']>=10000),['LAST_NAME','SALARY','DEPARTMENT_ID']]
+
+
+[문제72] 커미션이 null이 아닌 사원중에 부서가 NULL 인 사원의  last_name, salary, commission_pct,department_id 를 출력해주세요
+
+emp[emp['COMMISSION_PCT'].notnull()&(emp['DEPARTMENT_ID'].isnull())][['LAST_NAME','SALARY','COMMISSION_PCT','DEPARTMENT_ID']]
+emp.loc[emp['COMMISSION_PCT'].notnull()&(emp['DEPARTMENT_ID'].isnull()),['LAST_NAME','SALARY','COMMISSION_PCT','DEPARTMENT_ID']]
+
+
+[문제73] 커미션이 null인 사원중에 급여가 5000~10000  사원들의  last_name, department_id, salary를 출력해주세요.
+
+x = emp[emp['COMMISSION_PCT'].isnull() & ((emp['SALARY'] <= 10000) & (emp['SALARY'] >= 5000))][['LAST_NAME','DEPARTMENT_ID','SALARY']]
+emp.loc[emp['COMMISSION_PCT'].isnull() & ((emp['SALARY'] <= 10000) & (emp['SALARY'] >= 5000)),['LAST_NAME','DEPARTMENT_ID','SALARY']]
+
+x.sort_values(by=['DEPARTMENT_ID','SALARY'],ascending=[True,False])
+
+
+

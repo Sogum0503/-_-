@@ -1,0 +1,263 @@
+
+
+[문제74] SALARY * 12 + COMMISSION_PCT 결과를 출력해주세요. 
+        단 COMMISSION_PCT NULL 이면 0으로 처리해주세요.
+
+import csv
+import pandas as pd
+from pandas import Series,DataFrame
+import numpy as np
+from numpy import nan as NA
+import pandas as pd
+
+emp=pd.read_csv('c:/data/employees.csv')
+
+emp[emp['COMMISSION_PCT'].isnull()]
+emp['SALARY'] * 12 + emp['COMMISSION_PCT'].fillna(0)
+
+
+
+def square(x):
+    return x**2
+a = [2,3,4]
+s = Series([1,2,3])
+
+square(a) # 사용 안된다 
+square(s) # 시리즈 변경 후 사용 가능 
+
+# .apply : 반복해서 함수를 수행하는 함수! 중요! 
+s.apply(square)
+
+df  = DataFrame([[1,2,3],[4,5,6]])
+df
+
+df ** 2
+square(df)
+df.apply(square)
+df.apply(lambda x: x ** 2)
+
+# 이런식으로 함수를 만들고 싶다
+nvl(1) -> 1
+nvl(NaN) -> 0
+
+# null check~ 
+## isnull()
+## pd.isnull()
+x = 1
+Series(x).isnull()  # x = int 때문에 사용 안됨. .isnull : series에서만 사용 가능
+
+x = NA
+x = 1
+if Series(x).isnull().bool():
+    print(0)
+else:
+    print(x)
+
+type(Series(x).isnull()) # Series 때문에 if문이 수행이 안된다
+type(True) #bool 타입으로 바꿔줘야지 if문이 수행이 된다
+
+# pd.isnull 을 잘 사용해보자
+type(pd.isnull(x)) #바로 bool 값으로 나옴. 단일변수도 사용이 가능.
+pd.notnull(x)
+
+if pd.isnull(x):
+    print(0)
+else:
+    print(x)
+    
+x = NA
+def nvl(x):
+    if pd.isnull(x):
+        return 0
+    else:
+        return x
+
+nvl(1)
+nvl(NA)
+
+
+emp['SALARY'] * 12 + emp['COMMISSION_PCT'].fillna(0)
+emp['SALARY'] * 12 + emp['COMMISSION_PCT'].apply(nvl)
+emp['SALARY'] * 12 + emp['COMMISSION_PCT'].apply(lambda x : 0 if pd.isnull(x) else x)
+
+
+[문제75] last_name 첫글자가 S로 시작되는 사원들의 last_name을 출력해주세요.
+
+x = 'SeouL'
+x[0] == 'S'    
+    
+x.startswith('S')
+x.startswith('s')
+
+emp['LAST_NAME'].startswith('S') # 안됨
+
+# .startswith : 문자열에서 사용 가능 
+emp[[i.startswith('S') for i in emp['LAST_NAME']]]['LAST_NAME']
+
+emp['LAST_NAME'].apply(startwith('S')) # 안됨 
+emp.loc[emp['LAST_NAME'].apply(lambda x:x.startswith('S')),'LAST_NAME']
+emp.loc[emp['LAST_NAME'].apply(lambda x:x[0]=='S'),'LAST_NAME']
+
+# str.startswith : Series 에서 사용 가능
+emp['LAST_NAME'].str.startswith('S') 
+emp[emp['LAST_NAME'].str.startswith('S')]['LAST_NAME'] 
+emp.loc[emp['LAST_NAME'].str.startswith('S'),'LAST_NAME'] 
+
+
+[문제75] last_name 첫글자가 S로 시작되는 사원들의 last_name을 출력해주세요.
+
+x = 'Seoul'
+x[-1]='l'
+
+x.endswith('l')
+x.endswith('l')
+
+emp['LAST_NAME'].endswith('g') # 안됨
+emp['LAST_NAME'].str.endswith('g') # 됨
+
+emp[[i.endswith('g') for i in emp['LAST_NAME']]]['LAST_NAME']
+emp['LAST_NAME'].apply(endswith('g')) # 안됨 
+emp.loc[emp['LAST_NAME'].apply(lambda x:x.endswith('g')),'LAST_NAME']
+emp.loc[emp['LAST_NAME'].apply(lambda x:x[-1]=='g'),'LAST_NAME']
+
+# str.startswith : Series 에서 사용 가능
+emp['LAST_NAME'].str.endswith('g') 
+emp[emp['LAST_NAME'].str.endswith('g')]['LAST_NAME'] 
+emp.loc[emp['LAST_NAME'].str.endswith('g'),'LAST_NAME'] 
+
+
+obj = [' big','data ',' big data ']
+
+len(obj)
+len(obj[2])
+[len(i) for i in obj] # 공백문자도 포함한다
+[len(i.strip()) for i in obj] # 공백문자 불포함
+
+s = Series(obj)
+len(s)
+[len(s) for s in obj] # 공백문자도 포함한다
+[len(s.strip()) for s in obj] # 공백문자 불포함
+
+s.apply(lambda x:len(x))
+s.apply(lambda x:len(x.strip()))
+
+# 문자의 길이
+s.str.len() # series용
+
+# 문자의 앞,뒤 공백을 제거
+s.str.strip()    
+s.str.strip().str.len()
+
+# 문자의 앞 공백을 제거
+s.str.lstrip()    
+s.str.lstrip().str.len()
+
+# 문자의 뒤의 공백을 제거
+s.str.rstrip()    
+s.str.rstrip().str.len()
+
+# 문자의 앞의 문자를 제거
+s.str.lstrip('d')    
+s.str.lstrip('d').str.len()
+
+# 문자의 뒤의 문자를 제거
+s.str.rstrip('g')    
+s.str.rstrip('g').str.len()
+
+s=s.str.strip()
+s
+
+# 소문자 함수
+s.str.lower()
+
+# 대문자 함수
+s.str.upper()
+
+# 문장 첫글자 대문자, 뒷글자 소문자
+s.str.capitalize()
+
+# 단어별 첫글자 대문자 뒷글자 소문자
+s.str.title()
+
+x = s.str.title()
+x
+
+# 소문자를 대문자로 대문자를 소문자로 변환
+x.str.swapcase()
+
+
+[문제68] LAST_NAME을 KING으로 조회한후 LAST_NAME을 출력하세요.
+
+emp[emp['LAST_NAME'].str.upper() == 'KING']['LAST_NAME'].str.upper()
+emp.loc[emp['LAST_NAME'].str.upper() == 'KING','LAST_NAME'].str.lower()
+
+
+# 문자를 치환하는 함수 
+s= s.str.replace('big','BIG')
+s = s.str.replace('BIG','big')
+s
+
+# 문자의 위치를 찾아주는 함수
+s.str.find('a') # 없으면 -1
+s.str.find('a',6)
+s.str.find('a',0).values # array로 출력 
+
+# 모든 문자를 찾아서 값으로 반환하는 함수
+s.str.findall('a')
+
+# 찾는 문자열이 없으면 오류
+s.str.index('a') # 없으면 오류
+s.loc[0].str.index('a') # s.loc[0]은 문자형이라서 오류가 난다.
+Series(s.loc[1]).str.index('a') # series 변환 후 잘 나옴
+
+[문제68] a 글자가 두번 이상 나오는 last_name을 출력해주세요
+
+emp[emp['LAST_NAME'].str.findall('a').str.len() >= 2]['LAST_NAME']
+
+# 문자열이 포함되어 있는지를 체크하는 함수
+s.str.contains('a')
+
+s = s.str.replce('a','A')
+
+s.str.contains('a') # 대소문자를 구분한다
+s.str.contains('A') # 대소문자를 구분한다
+
+s.str.contains('a',case=True) # 대소문자를 구분한다
+s.str.contains('a',case=False) # 대소문자를 구분하지 않는다
+s[s.str.contains('a',case=False)]
+
+
+[문제79] 소문자 i글자가 포함되어 있는 LAST_NAME을 출력하세요.
+
+emp[emp['LAST_NAME'].str.contains('i',case=True)]['LAST_NAME']
+
+[문제80] 소문자 i, g 글자가 포함되어 있는 LAST_NAME을 출력하세요.
+
+emp[emp['LAST_NAME'].str.contains('i',case=True)|emp['LAST_NAME'].str.contains('g',case=True)]['LAST_NAME']
+emp[emp['LAST_NAME'].str.contains('i',case=True)&emp['LAST_NAME'].str.contains('g',case=True)]['LAST_NAME']
+
+
+[문제81] 두번째 위치에 i글자가 있는 last_name,salary를 출력하세요.
+
+[x for x in emp['LAST_NAME'] if x[1]=='i']
+
+emp[emp['LAST_NAME'].apply(lambda x:x[1] == 'i')][['LAST_NAME','SALARY']]
+
+emp[emp['LAST_NAME'].str.find('i',1) == 1][['LAST_NAME', 'SALARY']]
+
+
+# 지정한 인덱스값을 반환하는 함수
+emp['LAST_NAME'].str.get(1)
+emp[emp['LAST_NAME'].str.get(1) == 'i'][['LAST_NAME','SALARY']]
+
+emp['LAST_NAME'].str.slice(start=0,stop=2)
+
+
+
+[문제82] last_name 의 세번째 문자가 'a' 또는 'e' 가 포함된 last_name, salary를 출력하세요.
+
+emp[(emp['LAST_NAME'].str.get(2)=='a')|(emp['LAST_NAME'].str.get(2)=='e')][['LAST_NAME','SALARY']]
+
+emp[emp['LAST_NAME'].str.get(2).isin(['a','e'])][['LAST_NAME','SALARY']]
+
+

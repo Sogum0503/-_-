@@ -1,0 +1,384 @@
+
+[문제]  s 변수에 값들 중에 unique한 값만 s_unique변수에 입력해주세요.
+
+s = [1,2,3,4,1,2,3,4,5,1,2,3,4,5,6,'']
+
+s_unique = set(s)
+s_unique = [i for i in s_unique if i != ''] #공백 제거
+
+s_unique = []
+
+for i in s:
+    if not i in s_unique:
+        s_unique.append(i)
+
+for i in s:
+    if (not i in s_unique) and (i !=''): # 괄호로 해서도 가능
+        s_unique.append(i)
+    
+''' dict'''
+
+freq = {}
+
+for i in s:
+    if i in freq.keys():
+        freq[i] += 1
+    else:
+        if i != '':
+            freq[i] = 1
+
+s_uniuqe = list(freq.keys()) #list 변환 가능
+ 
+freq.key()
+freq.values()
+freq.items()
+
+''' collections 사용해보자 '''
+import collections
+
+x = collections.Counter(s)
+x.keys()
+
+[i for i in x.keys() if i != '']
+
+'''Series().unique()로 만들기'''
+from pandas import Series, DataFrame
+
+x= Series(s).unique()
+
+[i for i in x if i != '']
+
+
+'''dict의 새로운 기능: setdefault(key,value) '''
+# dic 의 새로운 기능 
+s = [1,2,3,4,1,2,3,4,5,1,2,3,4,5,6,'']
+freq = {1:0,2:0,3:0,4:0,5:0,6:0,'':0} 
+
+for i in s:
+    freq[i] += 1 #key를 이미 등록해놨기 때문에 value만 증가하게 하면 됨
+
+new = {}
+for i in s:
+    new.setdefault(i,0) 
+    new[i] += 1
+
+'''
+setdefault(key,value)
+key에 해당 키가 있을때 키의 값을 반환
+key가 없는경우 key:value를 등록.
+'''
+
+import collections
+# defaultdict: 디폴트 값을 갖는 딕셔너리를 생성하는 함수
+
+freq_new = collections.defaultdict(int)
+freq_new # defaultdict(int{}) dictionary의 변수를 int로 정의
+
+for i in s:
+    freq_new[i] += 1
+
+freq_new
+
+dict_new = collections.defaultdict(lambda:10)
+dict_new
+dict_new['A']
+dict_new['B']
+
+dict_new
+dict_new.keys()
+dict_new.values()
+dict_new.items()
+
+s = [1,2,3,4,1,2,3,4,5,1,2,3,4,5,6,'']
+
+s_new = [None if i == '' else i for i in s] # 조건제어문이 앞에(전부 다 표현하려고) 나왔다 하면, True값만 표현하고 나면 false값도 표현해야 한다 
+
+x = collections.Counter(s_new) 
+
+s1 = Series(x) # 유일한 값에 해당하는 빈도수가 sequnce 하게 출력됨  
+
+''' index null값 확인 : .index.isnull() | .index.isna()'''
+s1.index.isnull()
+s1[s1.index.isnull()]
+s1[s1.index.notnull()]
+
+s1[s1.index.isna()]
+s1[s1.index.notna()]
+
+''' Series(x).value_counts(): pandas에서 제공하는 빈도수 체크'''
+
+Series(s_new).value_counts()
+s_new.value_counts() # list에선 value counts 안됨 
+
+Series(s_new).value_counts(dropna=True) # value 기준으로 sort
+Series(s_new).value_counts(dropna=False)
+
+Series(s_new).value_counts(sort=True,ascending=False) #default 값
+Series(s_new).value_counts(sort=True,ascending=True)
+Series(s_new).value_counts(sort=False)
+
+''' pd.value_counts() : pandas 제공하는 빈도수 체크 2'''
+import pandas as pd
+
+pd.value_counts(Series(s_new))
+
+pd.value_counts(Series(s_new),sort=True,ascending=False)
+pd.value_counts(Series(s_new),sort=True,ascending=True)
+pd.value_counts(Series(s_new),sort=False)
+
+
+[문제88] JOB_ID 인원수를 구하세요.
+
+emp = pd.read_csv("c:/data/employees.csv")
+
+# solution 1: dict
+freq_job = {}
+
+for i in emp['JOB_ID']:
+    if i in freq_job.keys():
+        freq_job[i] += 1
+    else:
+        freq_job[i] = 1
+
+
+# solution 2 : setdefault
+freq_job = {}
+
+for i in emp['JOB_ID']:
+    freq_job.setdefault(i,0) # key 등록 작업
+    freq_job[i] += 1 # value 등록 작업
+
+
+# solution 3: collections.defaultdict()
+freq_job = collections.defaultdict(int)
+
+for i in emp['JOB_ID']:
+    freq_job.setdefault(i,0)
+    freq_job[i] += 1
+
+
+# solution 4: collections.Counter
+freq_job= collections.Counter(emp['JOB_ID'])
+freq_job
+
+import operator 
+for k,v in sorted(freq_job.items(),
+                  key=operator.itemgetter(1),
+                  reverse=True):
+    print(k,v)
+
+# solution 5: .value_counts()
+emp['JOB_ID'].value_counts()
+pd.value_counts(emp['JOB_ID'],sort=True,ascending=False)
+pd.value_counts(emp['JOB_ID'],sort=True,ascending=True)
+
+pd.value_counts(emp['JOB_ID']).sort_values(ascending=True)
+
+# index를 이용해서 오름차순 정렬하고 싶어
+pd.value_counts(emp['JOB_ID']).sort_index()
+pd.value_counts(emp['JOB_ID']).sort_index(ascending=False)
+
+
+[문제89] 아래화면과 같이 부서별로 급여의 총액을 구하세요.
+10 4400
+20 20000
+30 24900
+40 6500
+50 156400
+60 28800
+70 10000
+80 304500
+90 58000
+100 51608
+110 20308
+부서(X) 7000
+
+# solution 1
+## step 1: key값을 선언하자
+dept_sum = collections.defaultdict(int)
+for i in emp['DEPARTMENT_ID'].fillna(777): #nan 값도 출력을 하는데, sort 했을 때 맨 뒤에 두고싶어서 nan값에 변환작업을 함
+    dept_sum[int(i)]=0
+
+## step 2: 총액급여를 구하자 
+for i in dept_sum.keys():
+    if i == 777:
+        dept_sum[777] = emp.loc[emp.DEPARTMENT_ID.isnull(),'SALARY'].sum()
+    else:
+        dept_sum[i] = emp.loc[emp.DEPARTMENT_ID==i,'SALARY'].sum()
+
+dept_sum
+
+##step 3: sort 작업을 하자
+for key,value in sorted(dept_sum.items(),key=operator.itemgetter(0),reverse=False):
+    print('부서(X)' if key == 777 else key, value)
+
+# soluntion 2 : pandas 이용하는거 
+
+for i in Series(emp.DEPARTMENT_ID.unique()).sort_values():
+    if pd.isnull(i) : 
+        print('부서(X)',emp.loc[emp.DEPARTMENT_ID.isnull(),'SALARY'].sum())
+    else:
+        print(int(i),emp.loc[emp.DEPARTMENT_ID==i,'SALARY'].sum())
+
+
+''' groupby : pandas 의 grouping '''
+
+emp['SALARY'].groupby(emp['DEPARTMENT_ID']).sum() # nan 값은 나오지 않는다, fillna를 해서 생성하기
+emp.SALARY.groupby(emp['DEPARTMENT_ID']).mean()
+
+emp.groupby('DEPARTMENT_ID')['SALARY'].sum() #fillna가 식 안에서 만들어지지 않는다 
+emp.groupby('DEPARTMENT_ID')['SALARY'].mean()
+emp.groupby('DEPARTMENT_ID')['SALARY'].var()
+emp.groupby('DEPARTMENT_ID')['SALARY'].std()
+emp.groupby('DEPARTMENT_ID')['SALARY'].max()
+emp.groupby('DEPARTMENT_ID')['SALARY'].min()
+
+emp.SALARY.groupby(emp['DEPARTMENT_ID'].fillna(777)).mean()
+
+# aggregate([여러가지 넣어서 출력 가능])
+emp.SALARY.groupby(emp.DEPARTMENT_ID).aggregate(['sum','mean','var','std'])
+emp.groupby('DEPARTMENT_ID')['SALARY'].aggregate(['sum','mean','var','std'])
+
+# describe() : 사용가능, 근데 사분위수 까지 나와서 좀..?
+emp.SALARY.groupby(emp.DEPARTMENT_ID).describe()
+
+### dictionary로도 가능 
+emp.groupby('DEPARTMENT_ID').aggregate({'SALARY':'sum',
+                                        'HIRE_DATE':['max','min']})
+==
+
+select department_id, sum(salary),max(hire_date),min(hire_date)
+from emp
+group by department_id;
+
+
+''' 개별 컬럼이 여러개일 경우? : list 안에 나열 '''
+select department_id, job_id, sum(salry)
+from emp
+group by department_id, job_id;
+
+==
+
+emp.SALARY.groupby([emp.DEPARTMENT_ID,emp.JOB_ID]).sum()
+emp.groupby(['DEPARTMENT_ID','JOB_ID'])['SALARY'].aggregate(['sum','mean'])
+
+emp.SALARY.groupby([emp.DEPARTMENT_ID.fillna(str('부서없음')),emp.JOB_ID]).sum()
+
+# unstack == pivot (job_id == 열, department_id == 행)
+emp.SALARY.groupby([emp.DEPARTMENT_ID.fillna(str('부서없음')),emp.JOB_ID]).sum().unstack().fillna(0)
+
+# 부서별로 사원들 번호 출력 
+for name, group in emp.groupby('DEPARTMENT_ID')['EMPLOYEE_ID']:
+    print(name)
+    print(group)
+    
+# 전체 컬럼에 대한 그루핑 
+for name, group in emp.groupby('DEPARTMENT_ID'):
+    print(name)
+    print(group)
+
+for name, group in emp[['EMPLOYEE_ID','LAST_NAME' # 그루핑을 해야 할 컬럼을 넣지 않으면 오류가 발생한다
+                        ]].groupby('DEPARTMENT_ID')
+    print(name)
+    print(group)
+
+# groupby앞에 여러가지 컬럼을 넣으려고 할 때 이렇게. 그ㄹ핑 할 컬럼은 꼭 앞에 넣어야 함 안그러면 오류 발생 
+for name, group in emp[['EMPLOYEE_ID','LAST_NAME','DEPARTMENT_ID']].groupby('DEPARTMENT_ID'):
+    print(name)
+    print(group)
+
+# groupby([한개,두개]) : tuple 모양으로 반환 
+for name, group in emp[['EMPLOYEE_ID','LAST_NAME','DEPARTMENT_ID','JOB_ID']].groupby(['DEPARTMENT_ID','JOB_ID']):
+    print(name)
+    print(group)
+
+
+[문제90] 부서별로 급여의 총액 구하세요. 단 100000 이상 정보만 출력해주세요.
+
+'''
+select department_id,sum(salary)
+from emp
+group by department_id
+having sum(salary) >= 100000;
+'''
+
+x = emp.SALARY.groupby(emp.DEPARTMENT_ID).sum()
+x[x>= 100000]        
+
+
+[문제91] 부서별로 급여의 총액 데이터프레임으로 구축해주세요.
+
+    부서    총액
+0    10    4400
+1    20   20000
+2    30   24900
+3    40    6500
+4    50  156400
+5    60   28800
+6    70   10000
+7    80  304500
+8    90   58000
+9   100   51608
+10  110   20308
+11  NaN    7000
+
+import numpy as np 
+
+x = emp.SALARY.groupby(emp.DEPARTMENT_ID.fillna(777)).sum()
+x = x.reset_index()
+x['DEPARTMENT_ID'] = x['DEPARTMENT_ID'].astype('int') 
+x['DEPARTMENT_ID'] = x['DEPARTMENT_ID'].astype('object')  # object에도 
+x.info()
+
+'''
+x.loc[x['DEPARTMENT_ID']==777,'DEPARTMENT_ID'] = None # None을 넣자마자 실수로 다시 변경이 됨 
+''' 
+
+x.loc[x['DEPARTMENT_ID']=='777','DEPARTMENT_ID'] # object type으로 변경 후에도 찾아지지 않는다. 순수하게 숫자로 이루어진 object는 수치형으로 조회 해야한다
+
+x.loc[x['DEPARTMENT_ID']==777,'DEPARTMENT_ID'] = None 
+x.loc[x['DEPARTMENT_ID']==777,'DEPARTMENT_ID'] = np.NaN # 이렇게도 가능하다 
+x
+x.info()
+x[pd.isnull(x['DEPARTMENT_ID'])] # NaN으로는 되지 않았지만 진짜 Null이기 때문에 찾아진다 
+
+# 그냥 문자로 넣으면 되잖아~ 
+x.loc[x['DEPARTMENT_ID']==777,'DEPARTMENT_ID'] = 'NaN'
+x.info()
+pd.isnull(x['DEPARTMENT_ID']) #가짜  NaN이기 때문에 다 False 뜸 
+x[x['DEPARTMENT_ID']=='NaN']
+
+# rename 
+x = x.rename(columns={'DEPARTMENT_ID':'부서','SALARY':'총액'})
+x
+
+'''
+emp.info()
+department_id는 float 형식 : NULL값 때문에
+
+emp.loc[emp['EMPLOYEE_ID'] == 200,'LAST_NAME'] = np.NaN
+emp.info()
+
+수치형 자료 : NaN == float으로 바뀜
+캐릭터형 자료 : Nan 있더라도, 캐릭터형 그대로 
+'''
+
+'''
+x.info() 
+x.loc[x['부서']==10,'부서']
+
+type(x.iloc[0][0])
+Out[391]: int
+
+type(x,iloc[11][0])
+Out[392]: float
+
+# 겉은 object지만, 행열을 찾으면 int값으로 들어가 있고, NaN은 float형식으로 되어있다
+  object는 int,float 혼용 되어있지만, 겉은 object로 표현된다 
+
+type(emp.iloc[0][2])
+type(emp.iloc[100][2]) 시리즈지만 float 
+
+혼용되어있는 컬럼 : object 
+
+'''

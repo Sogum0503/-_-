@@ -144,3 +144,95 @@ Q2. 자동차 중에 어떤 category가 많은지 알아보려고 합니다.
 sns.countplot(data = mpg, x = 'category', order = mpg['category'].value_counts().index)
 
 ```
+
+#### 8-4. 선 그래프 - 시간에 따라 달라지는 데이터 표현하기
+```python
+특징 
+- 시간에 따라 달라지는 데이터를 표현할 때 
+- 환율, 주가지수 등 경제지표에서 주로 사용
+
+◆ 실습 1 : 시계열 그래프 만들기
+# economics 불러오기
+economics = pd.read_csv("c:/data/do_it_python/economics.csv")
+economics.info()
+economics.head() 
+
+sns.lineplot(data = economics,x = 'date', y = 'unemploy')
+
+* x축에 연도 표시하기 
+# 현재 economics 데이터의 date가 문자 타입으로 되어있음. 이걸 datetime64로 변경해야 한다.
+
+1) 날짜 시간 타입 변수 만들기
+# 날짜 시간 타입 변수 만들기 
+economics['date2'] = pd.to_datetime(economics['date']) 
+
+# 변수 타입 확인
+economics.info()
+
+# 날짜 시간 타입으로 변경해도 값은 변하지 않는다.
+economics[['date','date2']]
+
+# 날짜 시간 타입으로 되어있으면, df.dt를 활용해 연,월,일 출력이 가능하다.
+economics['date2'].dt.year
+economics['date2'].dt.month
+economics['date2'].dt.day
+
+2) 연도 변수 만들기 
+# 연도 변수 추가
+economics['year'] = economics['date2'].dt.year
+economics.head()
+
+3) x축에 연도 표시하기
+# x축에 연도 표시
+sns.lineplot(data = economics, x = 'year', y = 'unemploy')
+
+sns.lineplot(data = economics, x = 'year', y = 'unemploy', ci = None) # 신뢰구간 표시하지 않기 
+
+4) 해석
+실업자 수는 약 5년 주기로 등락을 반복하고, 2005년부터 급격하게 증가했다가 2010년부터 다시 감소하는 추세를 보인다.
+
+※ 혼자서 해보기 
+Q1. psavert(개인 저축률)가 시간에 따라 어떻게 변하는가?
+    연도별 개인 저축률의 변화를 나타낸 시계열 그래프를 만들어보자
+
+# 시간의 흐름에 따라 개인 저축률이 하락하고 있다. 실업률이 급격하게 증가한 2005년에 개인 저축률 또한 최저점을 찍었고, 그 이후에 다시 성장하는 추세를 보인다.
+sns.lineplot(data = economics, x = 'year', y = 'psavert',ci = None)
+
+## 상관관계 알아보기 
+'''
+상관관계를 구해보자 생각했던 이유는, 시간의 흐름에 따라서 psavert도 증가하고 unemploye도 증가해서였다.
+뭔가 결과가 좀 씁쓸하다... 회귀를 돌리지 않아서 무조건적으로 year->x라는 결론을 내리지는 못하지만, 
+일반적으로 생각했을 때 시간이 점점 흐를수록 개인 경제에서 긍정적인 측면은 负相关  부정적인 측면은 正相关한 관계가 되고있다. 
+'''
+corrdata = economics.corr(method = 'pearson').round(2)
+sns.heatmap(data=corrdata , annot = True, annot_kws = {'size':9})
+
+Q2. 2014년 월별 psavert의 변화를 나타낸 시계열 그래프를 만들어 보세요. 
+# 월 변수 추가 
+economics['month'] = economics['date2'].dt.month
+
+# 2014년 추출 
+month_14 = economics.query('year == 2014')
+
+# 선 그래프 생성하기
+sns.lineplot(data = month_14, x = 'month', y = 'psavert',ci=None)
+```
+
+#### 8-5. 상자 그림 - 집단 간 분포 차이 표현하기 
+```python
+특징
+- 데이터의 분포 또는 퍼져 있는 형태를 표현 
+- 데이터가 어떻게 분포하고 있는지 알 수 있다. (평균값 보다 더 많은 정보를 시각적으로 얻을 수 있습니다)
+
+◆ 실습 1 : 상자 그림 만들기 
+# 구동 방식별 고속도로 연비 
+sns.boxplot(data = mpg, x = 'drv', y = 'hwy')
+
+※ 혼자서 해보기 
+Q1. categoryk compact subcompact suv인 자동차의 cty가 어떻게 다른지 알아보자.
+    세 차종의 cty를 나타낸 상자 그림을 만들어보세요.
+
+x = mpg.query('category in ("compact","subcompact","suv")')
+sns.boxplot(data = x, x = 'category' , y = 'cty')
+
+```

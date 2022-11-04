@@ -1,14 +1,5 @@
 ### chapter 4 : 데이터 프레임의 세계로 
 ```python
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Sep 23 17:18:40 2022
-
-@author: 82108
-"""
-
-4.2 데이터 프레임의 세계로
-
 ## 데이터를 입력해서 데이터 프레임 만들기
 
 import pandas as pd

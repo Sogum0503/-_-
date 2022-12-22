@@ -1,9 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 23 16:38:35 2022
-
-@author: 82108
-"""
+```
+해당 코드는 RFM 프로젝트를 진행하며 워드 클라우드를 만들기 위해 짠 코드입니다. 
+```
 
 ### wordcloud 만들기 
 ```python
